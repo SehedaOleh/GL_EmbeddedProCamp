@@ -438,16 +438,6 @@
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f303xc.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\iar\startup_stm32f303xc.s</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f303xe.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\iar\startup_stm32f303xe.s</FilePath>
-            </File>
-            <File>
               <FileName>core_cm4.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\CMSIS\Include\core_cm4.h</FilePath>
@@ -466,6 +456,41 @@
               <FileName>core_cmSimd.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\CMSIS\Include\core_cmSimd.h</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f30x.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f30x.s</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f30x.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32f30x.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Include\system_stm32f30x.h</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f302x8.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f302x8.s</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f303xc.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f303xc.s</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f303xe.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f303xe.s</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f334x8.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f334x8.s</FilePath>
             </File>
           </Files>
         </Group>
