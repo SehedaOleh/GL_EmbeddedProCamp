@@ -1,0 +1,22 @@
+Dependencies for Project 'Proj1_Hello_world_STM32F303', Target 'Target 1': (DO NOT MODIFY !)
+F (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application\stm32f30x_it.c)(0x5B9E5C31)(--c99 --gnu -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F3xx_DFP\2.1.0\Drivers\CMSIS\Device\ST\STM32F3xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F303xC-o .\objects\stm32f30x_it.o --omf_browse .\objects\stm32f30x_it.crf --depend .\objects\stm32f30x_it.d)
+I (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application\stm32f30x_it.h)(0x5B9E5C31)
+I (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application\main.h)(0x5B9E5C31)
+F (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application\system_stm32f30x.c)(0x5B9E5C31)(--c99 --gnu -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F3xx_DFP\2.1.0\Drivers\CMSIS\Device\ST\STM32F3xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F303xC-o .\objects\system_stm32f30x.o --omf_browse .\objects\system_stm32f30x.crf --depend .\objects\system_stm32f30x.d)
+F (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application\main.c)(0x5B9E5C31)(--c99 --gnu -c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\_Target_1-IC:\Keil_v5\ARM\PACK\Keil\STM32F3xx_DFP\2.1.0\Drivers\CMSIS\Device\ST\STM32F3xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="526" -DSTM32F303xC-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_gpio.h)(0x5B9E5C33)()
+F (..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_tim.h)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM0b_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM0l_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM3b_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM3l_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM4b_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM4bf_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM4l_math.lib)(0x5B9E5C32)()
+F (.\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7b_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7bfdp_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7bfsp_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7l_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7lfdp_math.lib)(0x5B9E5C33)()
+F (.\CMSIS\Lib\ARM\arm_cortexM7lfsp_math.lib)(0x5B9E5C33)()
