@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\CMSIS\Lib;.\CMSIS\Include;.\STM32F30x_StdPeriph_Driver\src;.\STM32F30x_StdPeriph_Driver\inc;.\CMSIS\Lib\ARM;.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm;.\CMSIS\Device\ST\STM32F30x\Include;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\src;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>.\CMSIS\Lib;.\CMSIS\Include;.\STM32F30x_StdPeriph_Driver\src;.\STM32F30x_StdPeriph_Driver\inc;.\CMSIS\Lib\ARM;.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm;.\CMSIS\Device\ST\STM32F30x\Include;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\Application;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\src;..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\inc;.\CMSIS\Device\ST\STM32F30x\Include;.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -432,6 +432,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\src\stm32f30x_tim.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f30x_misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\src\stm32f30x_misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f30x_misc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Data_for_lecture1\GL_EmbeddedProCamp\Lecture_1\Exercise_1\BlinkExample\STM32F30x_DSP_StdPeriph_Lib_V1.2.3\Libraries\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -466,31 +476,6 @@
               <FileName>stm32f30x.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\CMSIS\Device\ST\STM32F30x\Include\stm32f30x.h</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32f30x.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Include\system_stm32f30x.h</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f302x8.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f302x8.s</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f303xc.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f303xc.s</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f303xe.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f303xe.s</FilePath>
-            </File>
-            <File>
-              <FileName>startup_stm32f334x8.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\CMSIS\Device\ST\STM32F30x\Source\Templates\arm\startup_stm32f334x8.s</FilePath>
             </File>
           </Files>
         </Group>
