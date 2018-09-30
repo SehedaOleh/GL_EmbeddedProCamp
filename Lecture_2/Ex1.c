@@ -17,8 +17,9 @@ int main()
     
     swap_result_uint16 = swap16(init_uint16_number);
     
-    printf ("Number in uint16 befor swap%X\n", init_uint16_number);
-    printf ("Number in uint16 after swap%X\n", swap_result_uint16);
+    
+    printf ("Number in uint16 befor swap 0x%X\n", init_uint16_number);
+    printf ("Number in uint16 after swap 0x%X\n", swap_result_uint16);
     
     //-------------------------------------------------------------------
     uint32_t init_uint32_number = 0xC2F493A1;
@@ -26,8 +27,8 @@ int main()
     
     swap_result_uint32 = swap32(init_uint32_number);
     
-    printf ("Number in uint32 befor swap%X\n", init_uint32_number);
-    printf ("Number in uint32 after swap%X\n", swap_result_uint32);
+    printf ("Number in uint32 befor swap 0x%X\n", init_uint32_number);
+    printf ("Number in uint32 after swap 0x%X\n", swap_result_uint32);
     
     //-------------------------------------------------------------------
     uint64_t init_uint64_number = 0xC2F493A1EB56D780;
@@ -35,16 +36,16 @@ int main()
     
     swap_result_uint64 = swap64(init_uint64_number);
     
-    printf ("Number in uint64 befor swap%lX\n", init_uint64_number);
-    printf ("Number in uint64 after swap%lX\n", swap_result_uint64);
+    printf ("Number in uint64 befor swap 0x%lX\n", init_uint64_number);
+    printf ("Number in uint64 after swap 0x%lX\n", swap_result_uint64);
     return 0;
 }
 uint16_t swap16 (uint16_t input16_number)
 {
     uint16_t first_byte = 0x0, secound_byte = 0x0, result16 = 0x0;
     
-    first_byte = input16_number<<8&0xFF00;
-    secound_byte = input16_number>>8&0x00FF;
+    first_byte = input16_number << 8 & 0xFF00;
+    secound_byte = input16_number >> 8 & 0x00FF;
     result16 = first_byte | secound_byte;
     return result16;
 }
