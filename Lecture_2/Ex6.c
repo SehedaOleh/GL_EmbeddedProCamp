@@ -15,9 +15,9 @@ int main()
         printf("Please insert number betwen %d and %d\n",start,stop);
         scanf("%d", &user_number);
     }
-    while (user_number > 500 && user_number < 1);
+    while ((user_number > 500)&&(user_number < 1));
     
-    for(int i = start - 1; i < stop; i++)
+    for(int i = start; i < stop; i++)
     {
        if ( i % user_number == 0) 
         printf(" %d", i);
