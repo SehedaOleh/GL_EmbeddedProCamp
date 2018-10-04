@@ -7,14 +7,15 @@ Create function to copy all digits from input string to output string
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+
 void only_digits (char* intup_string, char *output_string);
 int main()
 {
     char initial_string[256];
-    char digital_string[256] = { };
+    char digital_string[256] = { 0 };
     uint8_t str_length = 0;
     
-    scanf( "%s" , &initial_string );
+    gets(initial_string);
     
     only_digits (initial_string, digital_string);
     str_length = strlen (digital_string);
