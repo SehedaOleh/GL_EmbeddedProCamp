@@ -26,7 +26,7 @@ int main()
     }
     list_init -> number = 1;
     list_init -> digit = 0.5;
-    list_init -> new_element = NULL;
+    list_init -> next_element = NULL;
     
     for (int i = 0; i < 10; i++)
     {
