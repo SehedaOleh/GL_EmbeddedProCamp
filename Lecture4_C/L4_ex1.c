@@ -16,11 +16,17 @@ int main()
     uint8_t string_length = 0;
     
     printf ("Input string to copy\n");
-    scanf ("%s", string);
+    gets (string);
     
-    string_length = sizeof(string);
+    string_length = strlen(string);
     
     str_temp = (char*)malloc(sizeof(char)*string_length);
+    
+    if (str_temp == NULL)
+    {
+        printf ("Malloc error\n");
+        return -1;
+    }
     
     str_copy (string, str_temp);
     
