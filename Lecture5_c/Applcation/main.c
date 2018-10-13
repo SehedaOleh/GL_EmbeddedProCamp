@@ -1,37 +1,10 @@
 #include "stm32f30x.h"
 
-/** 
-  * @brief This devenition specefies the pin which connected to the board LED
-	*/
-#define LED_PORT   (GPIOE)
-#define LED_PINS   (GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15 )
 #define TIM_PERIOD (8000)
 /**
   * @brief This is runtime counter
   */
 static volatile uint32_t runtime = 0;
-
-/**
-  * @brief  This function inits the GPIO pin which connected to board led
-	*
-	* @retval None
-	*/
-void gpio_init(void)
-{
-	GPIO_InitTypeDef        gpio = {0};
-//  GPIO_InitTypeDef gpio = {0};
-	
-	 /* GPIOE Periph clock enable */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
-  
-  /* Configure PE14 and PE15 in output pushpull mode */
-  gpio.GPIO_Pin = LED_PINS;
-  gpio.GPIO_Mode = GPIO_Mode_OUT;
-  gpio.GPIO_OType = GPIO_OType_PP;
-  gpio.GPIO_Speed = GPIO_Speed_50MHz;
-  gpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(LED_PORT, &gpio);
-}
 
 /**
   * @brief  This function init timer to updates each 1 millisecond
@@ -108,17 +81,32 @@ void delay_ms(uint32_t delay)
   */
 int main(void)
 {
+//	GPIOA->MODER = GPIO_MODER_MODER7_0;		//digital output
+//	GPIOA->MODER = GPIO_MODER_MODER8_1;		//alternate func
+//	GPIOA->MODER = GPIO_MODER_MODER9;			//analog
+	
+	// DEVICE->REGISTER = VALUE;
+	
+	// ENBALE USART MODULE CLOCKING   (RCC) +
+	// INPUT 	BAUDRATE  (BRR)		+
+	// ENABLE USART		+
+	// ENABLE RECEIVER		+
+	// ENABLE TRANSMITTER		+
+	// ENABLE INTERRUPTS
+	
+	RCC->APB2ENR |= RCC_APB2ENR_USART1EN; // USART1 clock enable
+	USART1->BRR = 0x1D4C; // speed = 9600b/s
+	USART1->CR1 |= USART_CR1_UE; //  USART enable 
+	USART1->CR1 |= USART_CR1_TE; //  Transmitter enable
+	USART1->CR1 |= USART_CR1_RE; //  Receiver enable 
+
   clk_init();
   timer_init();
-  gpio_init();
-  
-  while(1)
-  {
-    GPIO_SetBits(LED_PORT, LED_PINS);
-    delay_ms(500);
-    GPIO_ResetBits(LED_PORT, LED_PINS);
-    delay_ms(500);
-  }
+
+//  while(1)
+//  {
+//   
+//  }
 
   return 0;
 }
