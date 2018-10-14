@@ -1,10 +1,24 @@
 #include "stm32f30x.h"
 
 #define TIM_PERIOD (8000)
-/**
-  * @brief This is runtime counter
-  */
+
+
+USART_InitTypeDef USART_InitStructure;
+extern uint32_t NbrOfDataToTransfer;
+extern uint32_t NbrOfDataToRead;
+extern __IO uint32_t TxCounter; 
+extern __IO uint32_t RxCounter; 
+/** @brief This is runtime counter  */
 static volatile uint32_t runtime = 0;
+
+/* Private function prototypes -----------------------------------------------*/
+static void NVIC_Config(void);
+/* UART function prototypes --------------------------------------------------*/
+void UART_init( void );
+/* USART1 send symbol function prototypes ------------------------------------*/
+void USART1_send_symb( char );
+/* USART1 send string function prototypes ------------------------------------*/
+void USART1_send_string( char* );
 
 /**
   * @brief  This function init timer to updates each 1 millisecond
@@ -81,14 +95,67 @@ void delay_ms(uint32_t delay)
   */
 int main(void)
 {
-//	GPIOA->MODER = GPIO_MODER_MODER7_0;		//digital output
-//	GPIOA->MODER = GPIO_MODER_MODER8_1;		//alternate func
-//	GPIOA->MODER = GPIO_MODER_MODER9;			//analog
+
+	//	GPIOA->MODER = GPIO_MODER_MODER7_0;		//digital output
+  //	GPIOA->MODER = GPIO_MODER_MODER8_1;		//alternate func
+  //	GPIOA->MODER = GPIO_MODER_MODER9;			//analog
+
+	/* NVIC configuration */
+  // NVIC_Config();
+  
+  /* USARTx configuration ------------------------------------------------------*/
+  /* USARTx configured as follow:
+        - BaudRate = 9600 baud  
+        - Word Length = 8 Bits
+        - Two Stop Bit
+        - Odd parity
+        - Hardware flow control disabled (RTS and CTS signals)
+        - Receive and transmit enabled
+  */
+//  USART_InitStructure.USART_BaudRate = 9600;
+//  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+//  USART_InitStructure.USART_StopBits = USART_StopBits_2;
+//  USART_InitStructure.USART_Parity = USART_Parity_Odd;
+//  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+//  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	//STM_EVAL_COMInit(COM1, &USART_InitStructure);
 	
+	
+	UART_init();
+  clk_init();
+  timer_init();
+
+  while(1)
+  {
+   USART1_send_string ("Test");
+		delay_ms(500);
+  }
+
+  return 0;
+}
+
+/**
+	* @brief  This is an interrupt handler routine for TIM4.
+  *         It just check if source of interrupt is Timer Update event.
+  *         If yes, then it updates runtime counter and clear pending bit.
+  *
+  * @retval None
+  */
+void TIM4_IRQHandler(void)
+{
+  if(TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
+    {
+      runtime++;
+      TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+    }
+}
+// UART init() use only CMSIS library
+//
+void UART_init(void)
+{
 	//ENABLE GPIO FOR USART 
 	//ENABLE CORRECT MODE FOR PINS		OPEN DRAIN + PULL_UP + ALTERNATE_MODE
-	
-	
+		
 	// DEVICE->REGISTER = VALUE;
 	
 	// ENBALE USART MODULE CLOCKING   (RCC) +
@@ -118,31 +185,41 @@ int main(void)
 	USART1->CR1 |= USART_CR1_TE; //  Transmitter enable
 	USART1->CR1 |= USART_CR1_RE; //  Receiver enable 
 	
-
-  clk_init();
-  timer_init();
-
-//  while(1)
-//  {
-//   
-//  }
-
-  return 0;
+	USART1->CR1 |= USART_CR1_RXNEIE; // RXNE Interrupt Enable
+	NVIC_EnableIRQ(USART1_IRQn); // USART1 global Interrupt
 }
+
+void USART1_send_symb( char symbol)
+{
+	while (!(USART1->ISR & USART_ISR_TC)); // waiting while Transmission of the last symbol is complete
+	
+	USART1->TDR = symbol;
+}
+
+void USART1_send_string( char *string)
+{
+	uint8_t string_point = 0;
+	
+	while ( string[string_point])
+	{
+		USART1_send_symb(string[string_point++]);
+	}
+}
+
 
 /**
-	* @brief  This is an interrupt handler routine for TIM4.
-  *         It just check if source of interrupt is Timer Update event.
-  *         If yes, then it updates runtime counter and clear pending bit.
-  *
+  * @brief  Configures the nested vectored interrupt controller.
+  * @param  None
   * @retval None
   */
-void TIM4_IRQHandler(void)
-{
-  if(TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
-    {
-      runtime++;
-      TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-    }
-}
+//static void NVIC_Config(void)
+//{
+//  NVIC_InitTypeDef NVIC_InitStructure;
 
+//  /* Enable the USART1 Interrupt */
+//  //NVIC_InitStructure.NVIC_IRQChannel = EVAL_COM1_;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//}
