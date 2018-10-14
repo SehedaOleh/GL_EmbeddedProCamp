@@ -85,6 +85,10 @@ int main(void)
 //	GPIOA->MODER = GPIO_MODER_MODER8_1;		//alternate func
 //	GPIOA->MODER = GPIO_MODER_MODER9;			//analog
 	
+	//ENABLE GPIO FOR USART 
+	//ENABLE CORRECT MODE FOR PINS		OPEN DRAIN + PULL_UP + ALTERNATE_MODE
+	
+	
 	// DEVICE->REGISTER = VALUE;
 	
 	// ENBALE USART MODULE CLOCKING   (RCC) +
@@ -94,11 +98,26 @@ int main(void)
 	// ENABLE TRANSMITTER		+
 	// ENABLE INTERRUPTS
 	
+	RCC->AHBENR |= RCC_AHBENR_GPIOAEN; // I/O port A clock enable 
+
+	GPIOA->AFR[1] = 0X00000770;						//pin9 and pin10 AF7 for USART1
+	
+	GPIOA->MODER |= GPIO_MODER_MODER9_1;  //pin9 in Alternate function mode
+	GPIOA->MODER |= GPIO_MODER_MODER10_1; //pin10 in Alternate function mode
+	
+	GPIOA->OTYPER |= GPIO_OTYPER_OT_9;    // pin9 Output open-drain
+	GPIOA->OTYPER |= GPIO_OTYPER_OT_10;   // pin10 Output open-drain
+	
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPDR9_0;  // pin9 Pull-up
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPDR10_0; // pin10 Pull-up
+
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN; // USART1 clock enable
+	
+	USART1->CR1 |= USART_CR1_UE; //  USART enable
 	USART1->BRR = 0x1D4C; // speed = 9600b/s
-	USART1->CR1 |= USART_CR1_UE; //  USART enable 
 	USART1->CR1 |= USART_CR1_TE; //  Transmitter enable
 	USART1->CR1 |= USART_CR1_RE; //  Receiver enable 
+	
 
   clk_init();
   timer_init();
