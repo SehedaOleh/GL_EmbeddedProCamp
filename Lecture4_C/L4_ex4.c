@@ -10,19 +10,17 @@ int sub (int a, int b);
 int test_func ( int (*ptr_func)(int, int), int, int);
 int main()
 {
-    int (*p_f1)(int, int) = add;
     int number_1 = 5;
     int number_2 = 3;
     int result_of_test_function = 0;
     
-    printf("add trougth fuction pointer %d\n", p_f1(4, 5));
+    printf("add trougth fuction pointer %d\n", add(4, 5));
     
-    result_of_test_function = test_func(p_f1, number_1, number_2);
+    result_of_test_function = test_func(add, number_1, number_2);
     
     printf("First Test functions results is: %d\n", result_of_test_function);
     
-    p_f1 = sub;
-    result_of_test_function = test_func(p_f1, number_1, number_2);
+    result_of_test_function = test_func(sub, number_1, number_2);
     
     printf("Second Test functions results is: %d\n", result_of_test_function);
     return 0;
