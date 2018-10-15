@@ -1,5 +1,9 @@
 #include "stm32f30x.h"
 
+# define RxLength 32
+
+char rx_uart[RxLength] = {}; //data buffer for USART1
+	
 /* Private function prototypes -----------------------------------------------*/
 /* UART function prototypes --------------------------------------------------*/
 void UART_init( void );
@@ -13,6 +17,10 @@ void USART1_send_string( char* );
 /* Test delay function prototypes --------------------------------------------*/
 void delay(int);
 
+	/* */
+void USART1_DeInit (void);
+	
+	
 /* Restore config function prototypes ----------------------------------------*/
 void RestoreConfiguration(void);
 
@@ -34,16 +42,16 @@ int main(void)
 		
   while(1)
   {
-		USART1_send_string (pString);
-		delay (2000);
-		//USART1_send_symb (rxData);
+//		USART1_send_string (pString);
+//		delay (2000);
+//		USART1_send_string (rx_uart);
+//		delay (2000);
+//		rx_uart[0] = '\0'; // clear first symbol in array after resending
   }
 
 	/* USART Disable */
-  USART_Cmd(USART1, DISABLE);
-    
-  /* Configure SystemClock*/
-  RestoreConfiguration();
+  USART1_DeInit();
+	
   return 0;
 }
 
@@ -138,16 +146,44 @@ void delay(int test_delay)
 /* USART1 read function --------------------------------------------*/
 void USART1_IRQHandler()
 {
+//	RCC->AHBENR |= RCC_AHBENR_GPIOEEN;		//PORT_E Clock enable
+//	GPIOE->MODER |= GPIO_MODER_MODER8_0;	//PE8 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER9_0;	//PE9 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER10_0;	//PE10 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER11_0;	//PE11 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER12_0;	//PE12 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER13_0;	//PE13 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER14_0;	//PE14 digital output enable
+//	GPIOE->MODER |= GPIO_MODER_MODER15_0;	//PE15 digital output enable
+//	
+//	GPIOE->ODR = 0xFF00;
+//*********************************************************************************	
+	//echo method one
 	
   char rxData = 0; // data to recive
-	
-	if ((USART1->ISR & USART_ISR_RXNE) != 0) // check flag if data is in RDR
+	int i = 0;
+	if ((USART1->ISR & USART_ISR_RXNE) != 0)
 	{
-		USART1->ISR &= USART_ISR_RXNE; 	// set interrupt to zero
-		rxData = USART1->RDR; 					// read data from RDR
+	USART1->TDR = USART1->RDR;
 	}
-}
+	
+//*********************************************************************************	
+	
+//	while('\0' == rxData)
+//	{
+//			while ((USART1->ISR & USART_ISR_RXNE) != 0);		// check flag if data is in RDR
 
+//			rxData = USART1->RDR; 					// read data from RDR
+//			rx_uart[i] = rxData;
+
+//			i ++;
+//	}
+}
+void USART1_DeInit (void)
+{
+	RCC->APB2RSTR |= RCC_APB2RSTR_USART1RST; //USART1 reset
+	RCC->APB2RSTR &= ~RCC_APB2RSTR_USART1RST;
+}
 void RestoreConfiguration(void) // functions from examples
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
