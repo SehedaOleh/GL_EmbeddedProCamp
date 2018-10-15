@@ -20,7 +20,7 @@ int main()
     
     string_length = strlen(string);
     
-    str_temp = (char*)malloc(sizeof(char)*string_length);
+    str_temp = malloc(sizeof(char)*string_length);
     
     if (str_temp == NULL)
     {
