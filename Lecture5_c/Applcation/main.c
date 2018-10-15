@@ -168,15 +168,17 @@ void USART1_IRQHandler()
 	}
 	
 //*********************************************************************************	
-	
+
 //	while('\0' == rxData)
 //	{
-//			while ((USART1->ISR & USART_ISR_RXNE) != 0);		// check flag if data is in RDR
+//			while ((USART1->ISR & USART_ISR_RXNE) == 0)		// check flag if data is in RDR
+//			{
+//			}
+//					rxData = USART1->RDR; 	// read data from RDR
+//					rx_uart[i] = rxData;
 
-//			rxData = USART1->RDR; 					// read data from RDR
-//			rx_uart[i] = rxData;
-
-//			i ++;
+//					i ++;
+//			
 //	}
 }
 void USART1_DeInit (void)
