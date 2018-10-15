@@ -18,7 +18,6 @@ void stack_init(stack_t *stack_pointer)
     
     stack_pointer = NULL; // initialize the stack by making the init stack pointer = NULL
 }
-
 /******************************************************************************
  
 Stack new node function
