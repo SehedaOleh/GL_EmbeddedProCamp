@@ -7,6 +7,7 @@ Stack library based on linked list
 *******************************************************************************/
 # include <stdint.h>
 # include <stdlib.h>
+# include <limits.h> 
 
 struct Stack
 {
@@ -16,36 +17,33 @@ struct Stack
 
 typedef struct Stack stack_t; //
 
-stack_t *stack_pointer; // creation of the init stack pointer.
+//stack_t *stack_pointer; // creation of the init stack pointer.
 
 /******************************************************************************
  
 Stack init function
 
 ******************************************************************************/
-
-void stack_init();
+void stack_init( );
 
 /******************************************************************************
  
 Stack push function
 
 ******************************************************************************/
-
-void stack_push (uint8_t number);
+void stack_push (stack_t**, uint8_t number);
 
 /******************************************************************************
  
 Stack pop function
 
 ******************************************************************************/
-
-uint8_t stack_pop ();
+uint8_t stack_pop (stack_t**);
 
 /******************************************************************************
  
 Stack read function
 
 ******************************************************************************/
-uint8_t stack_read ();
+uint8_t stack_read (stack_t**);
 #endif
