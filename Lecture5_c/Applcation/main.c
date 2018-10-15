@@ -10,16 +10,15 @@ void USART1_send_symb( char );
 /* USART1 send string function prototypes ------------------------------------*/
 void USART1_send_string( char* );
 
-void delay(int test_delay)
-{
-	int i = test_delay * 10000;
-	while(i--);
-}	
+/* Test delay function prototypes --------------------------------------------*/
+void delay(int);
 
+/* Restore config function prototypes ----------------------------------------*/
+void RestoreConfiguration(void);
 
 /**
   * @brief  This is Main routine. 
-  *         It is init all necessary perephery and then just toggle LED with 1 sec period.
+  *         It is init all necessary perephery and then echo UART info.
   * 
   * @retval If main routine return you something, then you get in trouble :)
   */
@@ -29,35 +28,25 @@ int main(void)
   //	GPIOA->MODER = GPIO_MODER_MODER8_1;		//alternate func
   //	GPIOA->MODER = GPIO_MODER_MODER9;			//analog
 	
-//  clk_init();
-//  timer_init();
   char *pString = "TESTstring any types\r\n";
+	
 	UART_init();
-
+		
   while(1)
   {
 		USART1_send_string (pString);
-		delay (500);
+		delay (2000);
+		//USART1_send_symb (rxData);
   }
 
+	/* USART Disable */
+  USART_Cmd(USART1, DISABLE);
+    
+  /* Configure SystemClock*/
+  RestoreConfiguration();
   return 0;
 }
 
-/**
-	* @brief  This is an interrupt handler routine for TIM4.
-  *         It just check if source of interrupt is Timer Update event.
-  *         If yes, then it updates runtime counter and clear pending bit.
-  *
-  * @retval None
-  */
-//void TIM4_IRQHandler(void)
-//{
-//  if(TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
-//    {
-//      runtime++;
-//      TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-//    }
-//}
 // UART init() use only CMSIS library
 //
 void UART_init(void)
@@ -94,8 +83,33 @@ void UART_init(void)
 	// ENABLE INTERRUPTS				+
 	USART1->CR1 |= USART_CR1_RXNEIE; // RXNE Interrupt Enable
 	NVIC_EnableIRQ(USART1_IRQn); // USART1 global Interrupt
+
+
+// ************************************ from exampels **************************
+ 
+// USART_InitTypeDef USART_InitStructure;
+
+	/* USARTx configured as follow:
+  - BaudRate = 9600 baud  
+  - Word Length = 8 Bits
+  - Stop Bit = 1 Stop Bit
+  - Parity = No Parity
+  - Hardware flow control disabled (RTS and CTS signals)
+  - Receive and transmit enabled
+  */
+ 
+ /* USART_DeInit(USART1);
+  USART_InitStructure.USART_BaudRate = 9600;
+  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+  USART_InitStructure.USART_StopBits = USART_StopBits_1;
+  USART_InitStructure.USART_Parity = USART_Parity_No;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(USART1, &USART_InitStructure);*/
+	
 }
 
+/* USART1 send symbol function ------------------------------------*/
 void USART1_send_symb( char symbol)
 {
 	while (!(USART1->ISR & USART_ISR_TC)); // waiting while Transmission of the last symbol is complete
@@ -103,6 +117,7 @@ void USART1_send_symb( char symbol)
 	USART1->TDR = symbol;
 }
 
+/* USART1 send string function ------------------------------------*/
 void USART1_send_string( char *string)
 {
 	uint8_t string_point = 0;
@@ -113,5 +128,56 @@ void USART1_send_string( char *string)
 	}
 }
 
+/* Test delay function --------------------------------------------*/
+void delay(int test_delay)
+{
+	int i = test_delay * 10000;
+	while(i--);
+}	
 
+/* USART1 read function --------------------------------------------*/
+void USART1_IRQHandler()
+{
+	
+  char rxData = 0; // data to recive
+	
+	if ((USART1->ISR & USART_ISR_RXNE) != 0) // check flag if data is in RDR
+	{
+		USART1->ISR &= USART_ISR_RXNE; 	// set interrupt to zero
+		rxData = USART1->RDR; 					// read data from RDR
+	}
+}
 
+void RestoreConfiguration(void) // functions from examples
+{
+  __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
+  
+  /* SYSCLK, HCLK, PCLK configuration ----------------------------------------*/    
+  /* Enable HSE */    
+  RCC_HSEConfig(RCC_HSE_ON);
+ 
+  /* Wait till HSE is ready and if Time out is reached exit */
+  HSEStatus = RCC_WaitForHSEStartUp();
+
+  if (HSEStatus == (uint32_t)0x01)
+  {
+    /* HCLK = SYSCLK */
+    RCC_HCLKConfig(RCC_SYSCLK_Div1); 
+    
+    /* PCLK1 = HCLK/2 */
+    RCC_PCLK1Config(RCC_HCLK_Div2);
+    
+    /* PCLK2 = HCLK */
+    RCC_PCLK2Config(RCC_HCLK_Div1);
+    
+    /*  PLL configuration:  = HSE *  9 = 72 MHz */
+    RCC_PREDIV1Config(RCC_PREDIV1_Div1);
+    RCC_PLLConfig(RCC_PLLSource_PREDIV1, RCC_PLLMul_9);
+    
+    /* Enable PLL */
+    RCC_PLLCmd(ENABLE);
+    
+    /* PLL as system clock source */
+    RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+  } 
+}
