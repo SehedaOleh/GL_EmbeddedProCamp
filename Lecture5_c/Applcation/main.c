@@ -2,7 +2,8 @@
 
 # define RxLength 32
 
-char rx_uart[RxLength] = {}; //data buffer for USART1
+//char rx_uart[RxLength] = {}; //data buffer for USART1
+char rxData = 0; // data to recive
 	
 /* Private function prototypes -----------------------------------------------*/
 /* UART function prototypes --------------------------------------------------*/
@@ -42,11 +43,9 @@ int main(void)
 		
   while(1)
   {
-//		USART1_send_string (pString);
-//		delay (2000);
-//		USART1_send_string (rx_uart);
-//		delay (2000);
-//		rx_uart[0] = '\0'; // clear first symbol in array after resending
+		USART1_send_symb (rxData);
+		delay (2000);
+		rxData = '\0'; // clear symbol after sending
   }
 
 	/* USART Disable */
@@ -160,11 +159,11 @@ void USART1_IRQHandler()
 //*********************************************************************************	
 	//echo method one
 	
-  char rxData = 0; // data to recive
-	int i = 0;
+//  int i = 0;
 	if ((USART1->ISR & USART_ISR_RXNE) != 0)
 	{
-	USART1->TDR = USART1->RDR;
+			rxData = USART1->RDR; 	// read data from RDR
+//			USART1->TDR = USART1->RDR;
 	}
 	
 //*********************************************************************************	
@@ -183,6 +182,25 @@ void USART1_IRQHandler()
 }
 void USART1_DeInit (void)
 {
+	RCC->AHBENR &= ~RCC_AHBENR_GPIOAEN; 		// I/O port A clock disable 
+	GPIOA->AFR[1] &= ~0X00000770;						//pin9 and pin10 ~AF7 
+	
+	GPIOA->MODER &= ~GPIO_MODER_MODER9_1;  //pin9 disable Alternate function mode
+	GPIOA->MODER &= ~GPIO_MODER_MODER10_1; //pin10 disable Alternate function mode
+	
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_9;    // pin9 disable Output open-drain
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_10;   // pin10 disable Output open-drain
+	
+	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR9_0;  // pin9 disable Pull-up 
+	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR10_0; // pin10 disable Pull-up
+	
+	RCC->APB2ENR &= ~RCC_APB2ENR_USART1EN; // USART1 clock disable
+	
+	USART1->CR1 &= ~USART_CR1_UE; //  USART disable
+	
+	USART1->CR1 &= ~USART_CR1_TE; //  Transmitter disable
+	USART1->CR1 &= ~USART_CR1_RE; //  Receiver disable 
+	
 	RCC->APB2RSTR |= RCC_APB2RSTR_USART1RST; //USART1 reset
 	RCC->APB2RSTR &= ~RCC_APB2RSTR_USART1RST;
 }
