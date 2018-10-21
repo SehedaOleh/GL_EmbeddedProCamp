@@ -398,11 +398,6 @@
               <FilePath>.\Applcation\system_stm32f30x.c</FilePath>
             </File>
             <File>
-              <FileName>main.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Applcation\main.h</FilePath>
-            </File>
-            <File>
               <FileName>stm32f30x_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\STM32F30x_StdPeriph_Driver\src\stm32f30x_usart.c</FilePath>
@@ -412,26 +407,6 @@
         <Group>
           <GroupName>Library</GroupName>
           <Files>
-            <File>
-              <FileName>stm32f30x_gpio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Library\STM32F30x_StdPeriph_Driver\inc\stm32f30x_gpio.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f30x_misc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Library\STM32F30x_StdPeriph_Driver\inc\stm32f30x_misc.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f30x_rcc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Library\STM32F30x_StdPeriph_Driver\inc\stm32f30x_rcc.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f30x_tim.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Library\STM32F30x_StdPeriph_Driver\inc\stm32f30x_tim.h</FilePath>
-            </File>
             <File>
               <FileName>stm32f30x_gpio.c</FileName>
               <FileType>1</FileType>
