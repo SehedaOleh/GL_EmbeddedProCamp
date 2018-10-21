@@ -203,7 +203,7 @@ void StartDefaultTask(void const * argument)
 		osDelay(100);
 		LED01OFF();
 		LED02ON();
-    osDelay(100);
+		osDelay(100);
   }
 }
 /* USER CODE BEGIN Header_StartTask02 */
@@ -217,7 +217,7 @@ void StartTask02(void const * argument)
 		osDelay(93);
 		LED03OFF();
 		LED04ON();
-    osDelay(93);
+		osDelay(93);
   }
 }
 
@@ -232,7 +232,7 @@ void StartTask03(void const * argument)
 		osDelay(87);
 		LED05OFF();
 		LED06ON();
-    osDelay(87);
+		osDelay(87);
   }
 }
 
