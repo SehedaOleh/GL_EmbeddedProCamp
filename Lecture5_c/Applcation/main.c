@@ -22,7 +22,11 @@ int main(void)
 	UART1_open();
   while(1)
   {
-		UART1_write(pString, strlen(pString));
+		UART1_write(pString, 12);
+		delay (1000);
+		UART1_read(pString, 10);
+		delay (1000);
+		UART1_write(pString, 10);
 		delay (1000);
 	}
 	/* USART Disable */
