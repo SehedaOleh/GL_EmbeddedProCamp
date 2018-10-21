@@ -235,7 +235,7 @@ void StartDefaultTask(void const * argument)
 		LED02OFF();
 		LED01ON();
 		HAL_Delay(25);
-		taskYIELD();
+		vTaskDelay(200);
   }
 	
 }
@@ -247,8 +247,8 @@ void StartTask02(void const * argument)
   {
 			LED01OFF();
 			LED02ON();
-		  HAL_Delay(25);
-			taskYIELD();
+			HAL_Delay(100);
+		  vTaskDelay(1);
   }
 	
 }
@@ -259,10 +259,12 @@ void StartTask03(void const * argument)
   {
 			LED06OFF();
 			LED05ON();
-			taskYIELD();	
+			HAL_Delay(77);
+		  
 			LED05OFF();
 			LED06ON();
-			taskYIELD();		
+		  HAL_Delay(77);
+			vTaskDelay(1);	
   }
 	
 }
