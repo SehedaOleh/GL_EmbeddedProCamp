@@ -20,9 +20,6 @@ int main(void)
 	//
 	UART1_init();
 	UART1_open();
-	
-	UART1_close();
-  USART1_DeInit();
   while(1)
   {
 		UART1_write(pString, 12);
