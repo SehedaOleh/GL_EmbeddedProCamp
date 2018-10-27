@@ -57,7 +57,7 @@ void UART1_read(uint8_t *string, size_t len)
 	uint8_t string_point = 0;
 	while (string_point < len)
 	{
-		while ((USART1->ISR & USART_ISR_RXNE) == 1)
+		while ((USART1->ISR & USART_ISR_RXNE) != 0)
 		{
 		}
 				string[string_point++] = USART1->RDR; 	// read data from RDR
