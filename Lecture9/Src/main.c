@@ -18,18 +18,20 @@ void StartTask03(void const * argument);
 
 void vApplicationIdleHook(void)
 {
-	 volatile int i = 5;
-	
-	while (i)
-	{
+		volatile int i = 100;
+		LED01ON();
+		while (i)
+		{
+
 		i--;
-	}
+		}
+		LED01OFF();
 }
 int main(void)
 {
   HAL_Init();
-	vTaskPrioritySet(StartDefaultTask, 2);
-//	vTaskPrioritySet(StartTask02, 2);
+//	vTaskPrioritySet(StartDefaultTask, 7);
+//	vTaskPrioritySet(StartTask02, 5);
 //	vTaskPrioritySet(StartTask03, 2);
   SystemClock_Config();
 
