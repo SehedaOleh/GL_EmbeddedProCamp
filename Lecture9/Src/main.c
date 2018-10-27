@@ -19,18 +19,18 @@ void StartTask03(void const * argument);
 void vApplicationIdleHook(void)
 {
 		volatile int i = 100;
-		LED01ON();
+//		LED01ON();
 		while (i)
 		{
 
 		i--;
 		}
-		LED01OFF();
+//		LED01OFF();
 }
 int main(void)
 {
   HAL_Init();
-//	vTaskPrioritySet(StartDefaultTask, 7);
+
 //	vTaskPrioritySet(StartTask02, 5);
 //	vTaskPrioritySet(StartTask03, 2);
   SystemClock_Config();
@@ -63,6 +63,7 @@ int main(void)
 /* StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
+	vTaskPrioritySet(NULL, 2);
   for(;;)
   {
     LED02OFF();
