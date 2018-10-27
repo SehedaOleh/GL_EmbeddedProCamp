@@ -2,6 +2,10 @@
 #include "stm32f3xx_hal.h"
 #include "cmsis_os.h"
 #include "Init.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
@@ -15,7 +19,9 @@ void StartTask03(void const * argument);
 int main(void)
 {
   HAL_Init();
-
+	vTaskPrioritySet(StartDefaultTask, 2);
+	vTaskPrioritySet(StartTask02, 2);
+	vTaskPrioritySet(StartTask03, 2);
   SystemClock_Config();
 
   MX_GPIO_Init();
