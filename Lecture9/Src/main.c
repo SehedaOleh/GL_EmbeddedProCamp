@@ -31,8 +31,6 @@ int main(void)
 {
   HAL_Init();
 
-//	vTaskPrioritySet(StartTask02, 5);
-//	vTaskPrioritySet(StartTask03, 2);
   SystemClock_Config();
 
   MX_GPIO_Init();
@@ -68,29 +66,37 @@ void StartDefaultTask(void const * argument)
   {
     LED02OFF();
 		LED01ON();
-    osDelay(100);
+    osDelay(1);
 		LED01OFF();
 		LED02ON();
-    osDelay(100);
+    osDelay(1);
   }
 }
 /* StartTask02 */
 void StartTask02(void const * argument)
 {
+	vTaskPrioritySet(NULL, 3);
+
   for(;;)
   {
 		LED04OFF();
 		LED03ON();
-    osDelay(100);
+    osDelay(1);
 		LED03OFF();
 		LED04ON();
-    osDelay(100);
+    osDelay(1);
   }
 }/* StartTask03 */
 void StartTask03(void const * argument)
 {
+	vTaskPrioritySet(NULL, 4);
   for(;;)
   {
+    LED06OFF();
+		LED05ON();
+    osDelay(1);
+		LED05OFF();
+		LED06ON();
     osDelay(1);
   }
 }
