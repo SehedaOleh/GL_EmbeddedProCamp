@@ -79,7 +79,8 @@ void vmyTaskCode( void* pvParameters)
 		osDelay(200);
 		count --;
 	}
-		vTaskDelete(NULL);
+	vTaskDelete(NULL);
+	myTaskHandle = NULL;
 		
 }
 	/* StartDefaultTask */
@@ -97,7 +98,7 @@ void StartDefaultTask(void const * argument)
     osDelay(100);
 		my_task_count ++;
 		
-		if (12 == my_task_count)
+		if (12 == my_task_count || NULL == myTaskHandle )
 		{
 		/* definition and creation of vmyTaskCode */
 		xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
