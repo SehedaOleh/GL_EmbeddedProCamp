@@ -52,11 +52,9 @@ int main(void)
   osThreadDef(myTask03, StartTask03, osPriorityIdle, 0, 128);
   myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
 	
+	/* definition and creation of vmyTaskCode */
 	vOtherFunction();
-	
-	
-	
-	/* definition and creation of Task */
+		
 	/* Start scheduler */
   osKernelStart();
 
@@ -74,9 +72,16 @@ int main(void)
 
 			for( ;; )
 			{
-					/* Task code goes here. */
-				osDelay(1);
+//				LED08OFF();
+//				LED07ON();
+//				osDelay(100);
+//				LED07OFF();
+//				LED08ON();
+//				osDelay(100);
+//				vTaskDelete(NULL); 
+				osDelay(100);
 			}
+			
 	}
 	/* Function that creates a task. */
 	
@@ -96,8 +101,7 @@ int main(void)
 
 			if( xReturned == pdPASS )
 			{
-					/* The task was created.  Use the task's handle to delete the task. */
-					//vTaskDelete( xHandle );
+					vTaskDelete (xHandle);
 			}
 		}
 /* StartDefaultTask */
@@ -108,10 +112,10 @@ void StartDefaultTask(void const * argument)
   {
     LED02OFF();
 		LED01ON();
-    osDelay(1);
+    osDelay(100);
 		LED01OFF();
 		LED02ON();
-    osDelay(1);
+    osDelay(100);
   }
 }
 /* StartTask02 */
@@ -123,10 +127,10 @@ void StartTask02(void const * argument)
   {
 		LED04OFF();
 		LED03ON();
-    osDelay(1);
+    osDelay(100);
 		LED03OFF();
 		LED04ON();
-    osDelay(1);
+    osDelay(100);
   }
 }/* StartTask03 */
 void StartTask03(void const * argument)
@@ -136,10 +140,10 @@ void StartTask03(void const * argument)
   {
     LED06OFF();
 		LED05ON();
-    osDelay(1);
+    osDelay(100);
 		LED05OFF();
 		LED06ON();
-    osDelay(1);
+    osDelay(100);
   }
 }
 /**
