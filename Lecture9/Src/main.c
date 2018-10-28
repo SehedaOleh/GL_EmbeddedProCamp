@@ -58,8 +58,8 @@ int main(void)
 		xTaskCreate(myTask_1,       /* Function that implements the task. */
 								"myTask_1",          /* Text name for the task. */
 								100,      /* Stack size in words, not bytes. */
-								( void * ) 1,    /* Parameter passed into the task. */
-								tskIDLE_PRIORITY,/* Priority at which the task is created. */
+								NULL,    /* Parameter passed into the task. */
+								2,/* Priority at which the task is created. */
 								&myTaskHandle_1 );
 	
 	/* Start scheduler */
@@ -80,8 +80,8 @@ void myTask_1( void* pvParameters)
 		xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
 								"myTask",          /* Text name for the task. */
 								16,      /* Stack size in words, not bytes. */
-								( void * ) 1,    /* Parameter passed into the task. */
-								tskIDLE_PRIORITY,/* Priority at which the task is created. */
+								NULL,    /* Parameter passed into the task. */
+								0,/* Priority at which the task is created. */
 								&myTaskHandle );
 		my_task_count = 0;						
 		}			
@@ -100,18 +100,26 @@ void myTask_1( void* pvParameters)
 void vmyTaskCode( void* pvParameters)
 {
 	uint8_t count = 5;
-	while ( count >= 1)
+	for (;;)
 	{
-		LED08OFF();
-		LED07ON();
-		osDelay (200);
-		LED07OFF();
-		LED08ON();
-		osDelay (200);
-		count --;
+		while ( count >= 1)
+		{
+			LED08OFF();
+			LED07ON();
+			osDelay (200);
+			LED07OFF();
+			LED08ON();
+			osDelay (200);
+			count --;
+		}
+		vTaskSuspendAll();
+		if(NULL != myTaskHandle)
+		{
+			myTaskHandle = NULL;
+			vTaskDelete(myTaskHandle);
+		}
+		xTaskResumeAll();
 	}
-	vTaskDelete(myTaskHandle);
-	myTaskHandle = NULL;
 		
 }
 	/* StartDefaultTask */
