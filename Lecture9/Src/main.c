@@ -10,6 +10,8 @@
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
 osThreadId myTask03Handle;
+
+TaskHandle_t myTaskHandle_1; //handler for myTask_1
 TaskHandle_t myTaskHandle; //handler for myTask
 BaseType_t xReturned;
 
@@ -18,7 +20,7 @@ void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
 void StartTask03(void const * argument);
 void vmyTaskCode( void* pvParameters);
-void vOtherFunction( void );
+void myTask_1(void* pvParameters);
 
 void vApplicationIdleHook(void)
 {
@@ -42,17 +44,23 @@ int main(void)
   MX_SPI1_Init();
   MX_USB_PCD_Init();
 
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+//  /* definition and creation of defaultTask */
+//  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+//  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
-  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
+//  /* definition and creation of myTask02 */
+//  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
+//  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
-  /* definition and creation of myTask03 */
-  osThreadDef(myTask03, StartTask03, osPriorityIdle, 0, 128);
-  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
+//  /* definition and creation of myTask03 */
+//  osThreadDef(myTask03, StartTask03, osPriorityIdle, 0, 128);
+//  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
+		xTaskCreate(myTask_1,       /* Function that implements the task. */
+								"myTask_1",          /* Text name for the task. */
+								100,      /* Stack size in words, not bytes. */
+								( void * ) 1,    /* Parameter passed into the task. */
+								tskIDLE_PRIORITY,/* Priority at which the task is created. */
+								&myTaskHandle_1 );
 	
 	/* Start scheduler */
   osKernelStart();
@@ -61,44 +69,12 @@ int main(void)
   {
   }
 }
-
-/* Task to be created. */
-void vmyTaskCode( void* pvParameters)
+void myTask_1( void* pvParameters)
 {
-		/* The parameter value is expected to be 1 as 1 is passed in the
-		pvParameters value in the call to xTaskCreate() below. 
-		configASSERT( ( ( uint32_t ) pvParameters ) == 1 );*/
-	uint8_t count = 5;
-	while ( count >= 1)
-	{
-		LED08OFF();
-		LED07ON();
-		osDelay(200);
-		LED07OFF();
-		LED08ON();
-		osDelay(200);
-		count --;
-	}
-	vTaskDelete(NULL);
-	myTaskHandle = NULL;
-		
-}
-	/* StartDefaultTask */
-void StartDefaultTask(void const * argument)
-{
-	vTaskPrioritySet(NULL, 2);
 	uint8_t my_task_count = 0;
   for(;;)
   {
-    LED02OFF();
-		LED01ON();
-    osDelay(100);
-		LED01OFF();
-		LED02ON();
-    osDelay(100);
-		my_task_count ++;
-		
-		if (12 == my_task_count || NULL == myTaskHandle )
+		if (12 == my_task_count)
 		{
 		/* definition and creation of vmyTaskCode */
 		xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
@@ -108,9 +84,49 @@ void StartDefaultTask(void const * argument)
 								tskIDLE_PRIORITY,/* Priority at which the task is created. */
 								&myTaskHandle );
 		my_task_count = 0;						
-		}								
+		}			
+		
+    LED02OFF();
+		LED01ON();
+    osDelay(100);
+		LED01OFF();
+		LED02ON();
+    osDelay(100);
+		my_task_count ++;
 	}
-	
+		
+}
+/* Start vmyTaskCode*/
+void vmyTaskCode( void* pvParameters)
+{
+	uint8_t count = 5;
+	while ( count >= 1)
+	{
+		LED08OFF();
+		LED07ON();
+		osDelay (200);
+		LED07OFF();
+		LED08ON();
+		osDelay (200);
+		count --;
+	}
+	vTaskDelete(myTaskHandle);
+	myTaskHandle = NULL;
+		
+}
+	/* StartDefaultTask */
+void StartDefaultTask(void const * argument)
+{
+	vTaskPrioritySet(NULL, 2);
+	for(;;)
+  {
+	  LED02OFF();
+		LED01ON();
+    osDelay(100);
+		LED01OFF();
+		LED02ON();
+    osDelay(100);
+	}
 }
 /* StartTask02 */
 void StartTask02(void const * argument)
