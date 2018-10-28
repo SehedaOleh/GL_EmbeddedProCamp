@@ -10,6 +10,7 @@
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
 osThreadId myTask03Handle;
+TaskHandle_t myTaskHandle; //handler for myTask
 
 /* Private function prototypes -----------------------------------------------*/
 void StartDefaultTask(void const * argument);
@@ -80,6 +81,7 @@ int main(void)
 //				osDelay(100);
 //				vTaskDelete(NULL); 
 				osDelay(100);
+				vTaskDelete(NULL); 
 			}
 			
 	}
@@ -97,11 +99,11 @@ int main(void)
 											16,      /* Stack size in words, not bytes. */
 											( void * ) 1,    /* Parameter passed into the task. */
 											tskIDLE_PRIORITY,/* Priority at which the task is created. */
-											&xHandle );      /* Used to pass out the created task's handle. */
+											&myTaskHandle );      /* Used to pass out the created task's handle. */
 
 			if( xReturned == pdPASS )
 			{
-					vTaskDelete (xHandle);
+//					vTaskDelete (xHandle);
 			}
 		}
 /* StartDefaultTask */
