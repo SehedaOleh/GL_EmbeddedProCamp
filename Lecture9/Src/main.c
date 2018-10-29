@@ -78,16 +78,7 @@ void myTask_1( void* pvParameters)
 		{
 			osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
 			TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
-//			TaskHandle_t handle;
-//			/* definition and creation of vmyTaskCode */
-//			xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
-//									"myTask",          /* Text name for the task. */
-//									16,      /* Stack size in words, not bytes. */
-//									NULL,    /* Parameter passed into the task. */
-//									0,/* Priority at which the task is created. */
-//									&handle );
 			my_task_count = 0;	
-			
 		}			
 		osDelay(200);
     LED02OFF();
@@ -116,14 +107,7 @@ void vmyTaskCode(void const* pvParameters)
 			osDelay (100);
 			count --;
 		}
-//		vTaskSuspendAll();
-//		if(NULL != myTaskHandle)
-//		{
-//			myTaskHandle = NULL;
-//			vTaskDelete(myTaskHandle);
-//		}
-//		xTaskResumeAll();
-		osThreadTerminate(NULL);
+		vTaskDelete(NULL);
 	}
 		
 }
