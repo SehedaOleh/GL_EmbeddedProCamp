@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'Task Management' 
+ * Project: 'Memory Management' 
  * Target:  'Task Management' 
  */
 
