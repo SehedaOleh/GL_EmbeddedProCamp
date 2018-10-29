@@ -72,20 +72,22 @@ int main(void)
 void myTask_1( void* pvParameters)
 {
 	uint8_t my_task_count = 0;
-  for(;;)
+	for(;;)
   {
 		if (12 == my_task_count)
 		{
-		/* definition and creation of vmyTaskCode */
-		xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
-								"myTask",          /* Text name for the task. */
-								16,      /* Stack size in words, not bytes. */
-								NULL,    /* Parameter passed into the task. */
-								0,/* Priority at which the task is created. */
-								&myTaskHandle );
-		my_task_count = 0;						
+			TaskHandle_t handle;
+			/* definition and creation of vmyTaskCode */
+			xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
+									"myTask",          /* Text name for the task. */
+									16,      /* Stack size in words, not bytes. */
+									NULL,    /* Parameter passed into the task. */
+									0,/* Priority at which the task is created. */
+									&handle );
+			my_task_count = 0;	
+			
 		}			
-		
+		osDelay(200);
     LED02OFF();
 		LED01ON();
     osDelay(100);
@@ -105,20 +107,21 @@ void vmyTaskCode( void* pvParameters)
 		while ( count >= 1)
 		{
 			LED08OFF();
-			LED07ON();
-			osDelay (200);
+			LED07ON(); 
+			osDelay (100);
 			LED07OFF();
 			LED08ON();
-			osDelay (200);
+			osDelay (100);
 			count --;
 		}
-		vTaskSuspendAll();
-		if(NULL != myTaskHandle)
-		{
-			myTaskHandle = NULL;
-			vTaskDelete(myTaskHandle);
-		}
-		xTaskResumeAll();
+//		vTaskSuspendAll();
+//		if(NULL != myTaskHandle)
+//		{
+//			myTaskHandle = NULL;
+//			vTaskDelete(myTaskHandle);
+//		}
+//		xTaskResumeAll();
+		osThreadTerminate(NULL);
 	}
 		
 }
