@@ -19,7 +19,7 @@ BaseType_t xReturned;
 void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
 void StartTask03(void const * argument);
-void vmyTaskCode( void* pvParameters);
+void vmyTaskCode(void const * pvParameters);
 void myTask_1(void* pvParameters);
 
 void vApplicationIdleHook(void)
@@ -57,7 +57,7 @@ int main(void)
 //  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
 		xTaskCreate(myTask_1,       /* Function that implements the task. */
 								"myTask_1",          /* Text name for the task. */
-								100,      /* Stack size in words, not bytes. */
+								256,      /* Stack size in words, not bytes. */
 								NULL,    /* Parameter passed into the task. */
 								2,/* Priority at which the task is created. */
 								&myTaskHandle_1 );
@@ -76,14 +76,16 @@ void myTask_1( void* pvParameters)
   {
 		if (12 == my_task_count)
 		{
-			TaskHandle_t handle;
-			/* definition and creation of vmyTaskCode */
-			xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
-									"myTask",          /* Text name for the task. */
-									16,      /* Stack size in words, not bytes. */
-									NULL,    /* Parameter passed into the task. */
-									0,/* Priority at which the task is created. */
-									&handle );
+			osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
+			TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
+//			TaskHandle_t handle;
+//			/* definition and creation of vmyTaskCode */
+//			xTaskCreate(vmyTaskCode,       /* Function that implements the task. */
+//									"myTask",          /* Text name for the task. */
+//									16,      /* Stack size in words, not bytes. */
+//									NULL,    /* Parameter passed into the task. */
+//									0,/* Priority at which the task is created. */
+//									&handle );
 			my_task_count = 0;	
 			
 		}			
@@ -99,7 +101,7 @@ void myTask_1( void* pvParameters)
 		
 }
 /* Start vmyTaskCode*/
-void vmyTaskCode( void* pvParameters)
+void vmyTaskCode(void const* pvParameters)
 {
 	uint8_t count = 5;
 	for (;;)
