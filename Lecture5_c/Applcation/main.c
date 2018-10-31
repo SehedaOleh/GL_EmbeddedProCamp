@@ -42,6 +42,7 @@ void delay(int test_delay)
 	int i = test_delay * 10000;
 	while(i--);
 }	
+
 void RestoreConfiguration(void) // functions from examples
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
