@@ -4,30 +4,30 @@
 
 # define RxLength 32
 
-//char rx_uart[RxLength] = {}; //data buffer for USART1
-char rxData = 0; // data to recive
+static volatile uint32_t runtime = 0;
 	
 /* Private function prototypes -----------------------------------------------*/
 
-void delay(int);
+//void delay(int);
 
 void RestoreConfiguration(void);
+void delay_ms(uint32_t);
 
 int main(void)
 {
 	//string for debug
-	 uint8_t *pString = "TESTstring any types\r\n";
+	 static uint8_t UART_rxdata[10] = {"adsr"};
 	//
 	UART1_init();
 	UART1_open();
   while(1)
   {
-		UART1_write(pString, 12);
-		delay (1000);
-		UART1_read(pString, 10);
-		delay (1000);
-		UART1_write(pString, 10);
-		delay (1000);
+		UART1_write(UART_rxdata, sizeof(UART_rxdata));
+		delay_ms (100);
+		UART1_read(UART_rxdata, 3);
+		delay_ms (1000);
+		UART1_write(UART_rxdata, 3);
+		delay_ms (1000);
 	}
 	/* USART Disable */
 	UART1_close();
@@ -37,11 +37,11 @@ int main(void)
 }
 
 /* Test delay function --------------------------------------------*/
-void delay(int test_delay)
-{
-	int i = test_delay * 10000;
-	while(i--);
-}	
+//void delay(int test_delay)
+//{
+//	int i = test_delay * 10000;
+//	while(i--);
+//}	
 
 void RestoreConfiguration(void) // functions from examples
 {
@@ -75,4 +75,13 @@ void RestoreConfiguration(void) // functions from examples
     /* PLL as system clock source */
     RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
   } 
+}
+void delay_ms(uint32_t delay)
+{
+  uint32_t target_runtime = runtime + delay;
+
+  while(target_runtime != runtime)
+    {
+      /* Wait while runtime variable reach target_runtime value */
+    }
 }
