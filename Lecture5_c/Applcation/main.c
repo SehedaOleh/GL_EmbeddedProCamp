@@ -9,7 +9,7 @@ static volatile uint32_t runtime = 0;
 	
 /* Private function prototypes -----------------------------------------------*/
 
-//void delay(int);
+void delay(int);
 
 void RestoreConfiguration(void);
 void delay_ms(uint32_t);
@@ -22,19 +22,18 @@ int main(void)
 	 static uint8_t UART_rxdata[10] = {"adsr"};
 	//
 	 
-	clk_init();
-  timer_init();
+//	clk_init();
+//  timer_init();
 	 
 	UART1_init();
 	UART1_open();
   while(1)
   {
-		UART1_write(UART_rxdata, sizeof(UART_rxdata));
-		delay_ms (100);
+
 		UART1_read(UART_rxdata, 3);
-		delay_ms (1000);
+		
 		UART1_write(UART_rxdata, 3);
-		delay_ms (1000);
+		
 	}
 	/* USART Disable */
 	UART1_close();
@@ -44,11 +43,11 @@ int main(void)
 }
 
 /* Test delay function --------------------------------------------*/
-//void delay(int test_delay)
-//{
-//	int i = test_delay * 10000;
-//	while(i--);
-//}	
+void delay(int test_delay)
+{
+	int i = test_delay * 10000;
+	while(i--);
+}	
 
 void RestoreConfiguration(void) // functions from examples
 {
