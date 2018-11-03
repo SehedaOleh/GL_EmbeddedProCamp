@@ -22,6 +22,17 @@ void StartTask03(void const * argument);
 void vmyTaskCode(void const * pvParameters);
 void myTask_1(void* pvParameters);
 
+void vApplicationIdleHook(void)
+{
+		volatile int i = 100;
+//		LED01ON();
+		while (i)
+		{
+
+		i--;
+		}
+//		LED01OFF();
+}
 int main(void)
 {
   HAL_Init();
@@ -52,7 +63,7 @@ int main(void)
 								&myTaskHandle_1 );
 	
 	/* Start scheduler */
-  vTaskStartScheduler();
+  osKernelStart();
 
   while (1)
   {
@@ -106,7 +117,12 @@ void StartDefaultTask(void const * argument)
 	vTaskPrioritySet(NULL, 2);
 	for(;;)
   {
-	  osDelay(1);
+	  LED02OFF();
+		LED01ON();
+    osDelay(100);
+		LED01OFF();
+		LED02ON();
+    osDelay(100);
 	}
 }
 /* StartTask02 */
