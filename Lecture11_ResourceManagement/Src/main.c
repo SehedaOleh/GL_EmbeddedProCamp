@@ -48,9 +48,9 @@ int main(void)
 //  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
 //  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-//  /* definition and creation of myTask02 */
-//  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
-//  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
+  /* definition and creation of myTask02 */
+  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
+  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
 //  /* definition and creation of myTask03 */
 //  osThreadDef(myTask03, StartTask03, osPriorityIdle, 0, 128);
@@ -74,12 +74,6 @@ void myTask_1( void* pvParameters)
 	uint8_t my_task_count = 0;
 	for(;;)
 	{
-		if (12 == my_task_count)
-		{
-			osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
-			TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
-			my_task_count = 0;	
-		}			
 		osDelay(200);
 		LED02OFF();
 		LED01ON();
@@ -91,26 +85,6 @@ void myTask_1( void* pvParameters)
 	}
 		
 }
-/* Start vmyTaskCode*/
-void vmyTaskCode(void const* pvParameters)
-{
-	uint8_t count = 5;
-	for (;;)
-	{
-		while ( count >= 1)
-		{
-		LED08OFF();
-		LED07ON(); 
-		osDelay (100);
-		LED07OFF();
-		LED08ON();
-		osDelay (100);
-		count --;
-		}
-		vTaskDelete(NULL);
-	}
-		
-}
 	/* StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
@@ -119,7 +93,7 @@ void StartDefaultTask(void const * argument)
 	{
 	LED02OFF();
 	LED01ON();
-	osDelay(100);
+	osDelay(200);
 	LED01OFF();
 	LED02ON();
 	osDelay(100);
@@ -132,12 +106,16 @@ void StartTask02(void const * argument)
 
   for(;;)
   {
-	LED04OFF();
-	LED03ON();
-	osDelay(100);
-	LED03OFF();
-	LED04ON();
-	osDelay(100);
+		taskENTER_CRITICAL();
+		LED04OFF();
+		LED03ON();
+		osDelay(100);
+		
+		LED03OFF();
+		LED04ON();
+		osDelay(100);
+		taskEXIT_CRITICAL();
+		
   }
 }/* StartTask03 */
 void StartTask03(void const * argument)
