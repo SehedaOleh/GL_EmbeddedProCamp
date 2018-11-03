@@ -12,7 +12,6 @@ osThreadId myTask02Handle;
 osThreadId myTask03Handle;
 
 TaskHandle_t myTaskHandle_1; //handler for myTask_1
-TaskHandle_t myTaskHandle; //handler for myTask
 BaseType_t xReturned;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,7 +56,7 @@ int main(void)
 //  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
 		xTaskCreate(myTask_1,       /* Function that implements the task. */
 								"myTask_1",          /* Text name for the task. */
-								256,      /* Stack size in words, not bytes. */
+								128,      /* Stack size in words, not bytes. */
 								NULL,    /* Parameter passed into the task. */
 								2,/* Priority at which the task is created. */
 								&myTaskHandle_1 );
