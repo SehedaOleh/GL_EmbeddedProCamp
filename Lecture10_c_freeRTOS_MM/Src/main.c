@@ -6,12 +6,24 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define STACK_SIZE 100
+
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
 osThreadId myTask03Handle;
 
-TaskHandle_t myTaskHandle_1; //handler for myTask_1
+TaskHandle_t myTaskHandle_1 = NULL; //handler for myTask_1
+ 
+/* Structure that will hold the TCB of the task being created. */
+	StaticTask_t xTaskBuffer;
+
+/* Buffer that the task being created will use as its stack.  Note this is
+	an array of StackType_t variables.  The size of StackType_t is dependent on
+	the RTOS port. */
+	StackType_t xStack[ STACK_SIZE ];		
+
+
 BaseType_t xReturned;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -21,17 +33,6 @@ void StartTask03(void const * argument);
 void vmyTaskCode(void const * pvParameters);
 void myTask_1(void* pvParameters);
 
-void vApplicationIdleHook(void)
-{
-		volatile int i = 100;
-//		LED01ON();
-		while (i)
-		{
-
-		i--;
-		}
-//		LED01OFF();
-}
 int main(void)
 {
   HAL_Init();
@@ -54,12 +55,18 @@ int main(void)
 //  /* definition and creation of myTask03 */
 //  osThreadDef(myTask03, StartTask03, osPriorityIdle, 0, 128);
 //  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
-		xTaskCreate(myTask_1,       /* Function that implements the task. */
-								"myTask_1",          /* Text name for the task. */
-								128,      /* Stack size in words, not bytes. */
-								NULL,    /* Parameter passed into the task. */
-								2,/* Priority at which the task is created. */
-								&myTaskHandle_1 );
+	
+	  
+	  
+		/* Create the task without using any dynamic memory allocation. */
+//		myTaskHandle_1 = xTaskCreateStatic(
+//								myTask_1,       	/* Function that implements the task. */
+//								"myTask_Static", 	/* Text name for the task. */
+//								STACK_SIZE,    		/* Number of indexes in the xStack array. */
+//								( void * ) 1,     /* Parameter passed into the task. */
+//								tskIDLE_PRIORITY,	/* Priority at which the task is created. */
+//								xStack,           /* Array to use as the task's stack. */
+//								&xTaskBuffer );   /* Variable to hold the task's data structure. */
 	
 	/* Start scheduler */
   osKernelStart();
@@ -68,6 +75,15 @@ int main(void)
   {
   }
 }
+void vApplicationIdleHook( void )
+{
+	volatile int i = 5;
+	while (i)
+	{
+		i--;
+	}
+}
+
 void myTask_1( void* pvParameters)
 {
 	uint8_t my_task_count = 0;
@@ -106,7 +122,8 @@ void vmyTaskCode(void const* pvParameters)
 			osDelay (100);
 			count --;
 		}
-		vTaskDelete(NULL);
+		vTaskSuspend( myTaskHandle_1 );
+		//vTaskDelete(NULL);
 	}
 		
 }
