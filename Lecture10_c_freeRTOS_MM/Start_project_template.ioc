@@ -1,6 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK
+FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION
+FREERTOS.MEMORY_ALLOCATION=2
 FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;myTask02,-3,128,StartTask02,Default,NULL,Dynamic,NULL,NULL;myTask03,-3,128,StartTask03,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 I2C1.IPParameters=Timing-I2C

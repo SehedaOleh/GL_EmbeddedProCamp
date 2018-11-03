@@ -59,14 +59,14 @@ int main(void)
 	  
 	  
 		/* Create the task without using any dynamic memory allocation. */
-//		myTaskHandle_1 = xTaskCreateStatic(
-//								myTask_1,       	/* Function that implements the task. */
-//								"myTask_Static", 	/* Text name for the task. */
-//								STACK_SIZE,    		/* Number of indexes in the xStack array. */
-//								( void * ) 1,     /* Parameter passed into the task. */
-//								tskIDLE_PRIORITY,	/* Priority at which the task is created. */
-//								xStack,           /* Array to use as the task's stack. */
-//								&xTaskBuffer );   /* Variable to hold the task's data structure. */
+		myTaskHandle_1 = xTaskCreateStatic(
+								myTask_1,       	/* Function that implements the task. */
+								"myTask_Static", 	/* Text name for the task. */
+								STACK_SIZE,    		/* Number of indexes in the xStack array. */
+								( void * ) 1,     /* Parameter passed into the task. */
+								tskIDLE_PRIORITY,	/* Priority at which the task is created. */
+								xStack,           /* Array to use as the task's stack. */
+								&xTaskBuffer );   /* Variable to hold the task's data structure. */
 	
 	/* Start scheduler */
   osKernelStart();
@@ -122,8 +122,8 @@ void vmyTaskCode(void const* pvParameters)
 			osDelay (100);
 			count --;
 		}
-		vTaskSuspend( myTaskHandle_1 );
-		//vTaskDelete(NULL);
+		//vTaskSuspend( myTaskHandle_1 );
+		vTaskDelete(NULL);
 	}
 		
 }
