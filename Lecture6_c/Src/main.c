@@ -52,6 +52,7 @@ UART_HandleTypeDef huart1;
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
+#define str_length 10
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
@@ -80,7 +81,7 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t  str[] = "USART1 send data\n\r";
+	uint8_t  str[str_length] = {0};
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -88,39 +89,28 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USB_PCD_Init();
   MX_USART1_UART_Init();
-  /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+	
+	HAL_UART_Receive_IT(&huart1, str, sizeof(str));
+  
+	while (1)
   {
-
   /* USER CODE END WHILE */
-	HAL_UART_Transmit(&huart1, str, sizeof(str),0xFFFF);
-	HAL_Delay(500);
-  /* USER CODE BEGIN 3 */
-
+		HAL_UART_Transmit(&huart1, str, sizeof(str),0xFFFF);
+		HAL_Delay(500);
+		HAL_UART_Receive_IT(&huart1, str, sizeof(str));
+		HAL_Delay(100);
   }
-  /* USER CODE END 3 */
-
 }
 
 /**
