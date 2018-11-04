@@ -58,7 +58,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
-uint8_t dataTx[str_length] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 uint8_t dataRx[str_length] = {0};
 /* USER CODE BEGIN PV */
 
@@ -101,22 +101,22 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-	
+	//HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
 
 	//HAL_UART_Receive_IT(&huart1, str, sizeof(str));
-  
+
 	while (1)
   {
   /* USER CODE END WHILE */
 		set_SS_SPI3();
 		HAL_SPI_Transmit (&hspi1, (uint8_t *)dataTx, str_length, 0xFFFF);
-		reset_SS_SPI3();
+		
 		
 //		while (HAL_SPI_GetState (&hspi1) != HAL_SPI_STATE_READY)
 //		{
 //		}
 		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
+		reset_SS_SPI3();
 		if (dataRx[0] != 0)
 		{
 			LED01ON();
@@ -124,7 +124,7 @@ int main(void)
 			LED01OFF();
 		}
   /* USER CODE BEGIN 3 */
-
+		HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 
@@ -349,13 +349,13 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-	void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-	{
-		if(hspi -> Instance == hspi3.Instance)
-		{
-			HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-		}
-	}
+//	void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+//	{
+//		if(hspi -> Instance == hspi3.Instance)
+//		{
+//			HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
+//		}
+//	}
 /* USER CODE END 4 */
 
 /**
