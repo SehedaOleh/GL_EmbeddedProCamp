@@ -91,12 +91,15 @@ void StartDefaultTask(void const * argument)
 	vTaskPrioritySet(NULL, 2);
 	for(;;)
 	{
-	LED02OFF();
-	LED01ON();
-	osDelay(200);
-	LED01OFF();
-	LED02ON();
-	osDelay(100);
+		
+		LED02OFF();
+		LED01ON();
+		osDelay(200);
+		LED01OFF();
+		LED02ON();
+		osDelay(100);
+		
+
 	}
 }
 /* StartTask02 */
@@ -106,15 +109,19 @@ void StartTask02(void const * argument)
 
   for(;;)
   {
-		taskENTER_CRITICAL();
+		//taskENTER_CRITICAL();
+		vTaskSuspendAll();
 		LED04OFF();
 		LED03ON();
-		osDelay(100);
-		
+		//osDelay(100);
+		HAL_Delay(100);
 		LED03OFF();
 		LED04ON();
+		HAL_Delay(100);
+		//osDelay(100);
+		xTaskResumeAll();
+		//taskEXIT_CRITICAL();
 		osDelay(100);
-		taskEXIT_CRITICAL();
 		
   }
 }/* StartTask03 */
