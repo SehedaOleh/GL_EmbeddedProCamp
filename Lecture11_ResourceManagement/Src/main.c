@@ -115,15 +115,24 @@ void StartDefaultTask(void const * argument)
 	vTaskPrioritySet(NULL, 2);
 	for(;;)
 	{
-		
-		LED02OFF();
-		LED01ON();
-		osDelay(200);
-		LED01OFF();
-		LED02ON();
-		osDelay(100);
-		
+		if( xMutex != NULL )
+    {
+			xSemaphoreTake( xMutex, portMAX_DELAY );
+			LED02OFF();
+			LED01ON();
+			osDelay(100);
+			LED01OFF();
+			LED02ON();
+			//osDelay(100);
+			osDelay(100);
+			xSemaphoreGive( xMutex );
 
+			osDelay(100);
+		}
+		else
+		{
+			osDelay(100);
+		}
 	}
 }
 /* StartTask02 */
