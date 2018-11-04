@@ -80,7 +80,7 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t  str[] = "USART1 send data\r\n";
+	uint8_t  str[] = "USART1 send data\n\r";
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -115,7 +115,7 @@ int main(void)
 
   /* USER CODE END WHILE */
 	HAL_UART_Transmit(&huart1, str, sizeof(str),0xFFFF);
-	HAL_Delay(100);
+	HAL_Delay(500);
   /* USER CODE BEGIN 3 */
 
   }
