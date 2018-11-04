@@ -112,7 +112,36 @@
 /* #define USE_FULL_ASSERT    1U */
 
 /* USER CODE BEGIN Private defines */
+#define LED01 GPIO_PIN_9 		// LED 3
+#define LED02 GPIO_PIN_8		// LED 4
+#define LED03 GPIO_PIN_10   // LED 5
+#define LED04 GPIO_PIN_15 	// LED 6
+#define LED05 GPIO_PIN_11		// LED 7
+#define LED06 GPIO_PIN_14   // LED 8
+#define LED07 GPIO_PIN_12		// LED 9
+#define LED08 GPIO_PIN_13   // LED 10
 
+#define LEDPORT GPIOE // all LED's are connected to portE
+
+											// functions set LED's on
+#define LED01ON() HAL_GPIO_WritePin(LEDPORT, LED01, GPIO_PIN_SET)
+#define LED02ON() HAL_GPIO_WritePin(LEDPORT, LED02, GPIO_PIN_SET)
+#define LED03ON() HAL_GPIO_WritePin(LEDPORT, LED03, GPIO_PIN_SET)
+#define LED04ON() HAL_GPIO_WritePin(LEDPORT, LED04, GPIO_PIN_SET)
+#define LED05ON() HAL_GPIO_WritePin(LEDPORT, LED05, GPIO_PIN_SET)
+#define LED06ON() HAL_GPIO_WritePin(LEDPORT, LED06, GPIO_PIN_SET)
+#define LED07ON() HAL_GPIO_WritePin(LEDPORT, LED07, GPIO_PIN_SET)
+#define LED08ON() HAL_GPIO_WritePin(LEDPORT, LED08, GPIO_PIN_SET)
+
+											// functions set LED's off
+#define LED01OFF() HAL_GPIO_WritePin(LEDPORT, LED01, GPIO_PIN_RESET)	
+#define LED02OFF() HAL_GPIO_WritePin(LEDPORT, LED02, GPIO_PIN_RESET)
+#define LED03OFF() HAL_GPIO_WritePin(LEDPORT, LED03, GPIO_PIN_RESET)
+#define LED04OFF() HAL_GPIO_WritePin(LEDPORT, LED04, GPIO_PIN_RESET)
+#define LED05OFF() HAL_GPIO_WritePin(LEDPORT, LED05, GPIO_PIN_RESET)
+#define LED06OFF() HAL_GPIO_WritePin(LEDPORT, LED06, GPIO_PIN_RESET)
+#define LED07OFF() HAL_GPIO_WritePin(LEDPORT, LED07, GPIO_PIN_RESET)
+#define LED08OFF() HAL_GPIO_WritePin(LEDPORT, LED08, GPIO_PIN_RESET)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
