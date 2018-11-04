@@ -15,6 +15,8 @@ TaskHandle_t myTaskHandle_1; //handler for myTask_1
 TaskHandle_t myTaskHandle; //handler for myTask
 BaseType_t xReturned;
 
+SemaphoreHandle_t xMutex;
+
 /* Private function prototypes -----------------------------------------------*/
 void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
@@ -22,17 +24,18 @@ void StartTask03(void const * argument);
 void vmyTaskCode(void const * pvParameters);
 void myTask_1(void* pvParameters);
 
-void vApplicationIdleHook(void)
-{
-		volatile int i = 100;
-//		LED01ON();
-		while (i)
-		{
+//void vATask( void * pvParameters )
+//{
+//   /* Create a mutex type semaphore. */
+//   xMutex = xSemaphoreCreateMutex();
 
-		i--;
-		}
-//		LED01OFF();
-}
+//   if( xMutex != NULL )
+//   {
+//		 LED06ON();
+//       /* The semaphore was created successfully and
+//       can be used. */
+//   }
+//}
 int main(void)
 {
   HAL_Init();
@@ -61,8 +64,9 @@ int main(void)
 								NULL,    /* Parameter passed into the task. */
 								2,/* Priority at which the task is created. */
 								&myTaskHandle_1 );
-	
 	/* Start scheduler */
+	
+	
   osKernelStart();
 
   while (1)
@@ -72,15 +76,35 @@ int main(void)
 void myTask_1( void* pvParameters)
 {
 	uint8_t my_task_count = 0;
+	xMutex = xSemaphoreCreateMutex();
+
+	if( xMutex != NULL )
+	{
+	 LED06ON();
+		 /* The semaphore was created successfully and
+		 can be used. */
+	}
 	for(;;)
 	{
-		osDelay(200);
-		LED02OFF();
-		LED01ON();
-		osDelay(100);
-		LED01OFF();
-		LED02ON();
-		osDelay(100);
+		if( xMutex != NULL )
+    {
+			xSemaphoreTake( xMutex, portMAX_DELAY );
+
+			osDelay(200);
+			LED02OFF();
+			LED01ON();
+			osDelay(100);
+			LED01OFF();
+			LED02ON();
+			xSemaphoreGive( xMutex );
+
+			osDelay(100);
+		}
+		else
+		{
+			osDelay(100);
+		}
+		
 		my_task_count ++;
 	}
 		
@@ -110,7 +134,7 @@ void StartTask02(void const * argument)
   for(;;)
   {
 		//taskENTER_CRITICAL();
-		vTaskSuspendAll();
+		//vTaskSuspendAll();
 		LED04OFF();
 		LED03ON();
 		//osDelay(100);
@@ -119,7 +143,7 @@ void StartTask02(void const * argument)
 		LED04ON();
 		HAL_Delay(100);
 		//osDelay(100);
-		xTaskResumeAll();
+		//xTaskResumeAll();
 		//taskEXIT_CRITICAL();
 		osDelay(100);
 		
