@@ -56,7 +56,7 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
 #define str_length 10
-#define reset_SS_SPI3 
+#define set_SS_SPI3 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15,GPIO_PIN_RESET)
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
@@ -71,23 +71,11 @@ static void MX_USART1_UART_Init(void);
 static void MX_SPI3_Init(void);
 
 /* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
 
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  *
-  * @retval None
-  */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t  str[str_length] = {0};
+	//uint8_t  str[str_length] = {0};
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
