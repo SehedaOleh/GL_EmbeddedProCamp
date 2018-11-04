@@ -1,6 +1,16 @@
 #MicroXplorer Configuration settings - do not modify
 Dma.Request0=USART1_TX
-Dma.RequestsNb=1
+Dma.Request1=USART1_RX
+Dma.RequestsNb=2
+Dma.USART1_RX.1.Direction=DMA_PERIPH_TO_MEMORY
+Dma.USART1_RX.1.Instance=DMA1_Channel5
+Dma.USART1_RX.1.MemDataAlignment=DMA_MDATAALIGN_BYTE
+Dma.USART1_RX.1.MemInc=DMA_MINC_ENABLE
+Dma.USART1_RX.1.Mode=DMA_NORMAL
+Dma.USART1_RX.1.PeriphDataAlignment=DMA_PDATAALIGN_BYTE
+Dma.USART1_RX.1.PeriphInc=DMA_PINC_DISABLE
+Dma.USART1_RX.1.Priority=DMA_PRIORITY_LOW
+Dma.USART1_RX.1.RequestParameters=Instance,Direction,PeriphInc,MemInc,PeriphDataAlignment,MemDataAlignment,Mode,Priority
 Dma.USART1_TX.0.Direction=DMA_MEMORY_TO_PERIPH
 Dma.USART1_TX.0.Instance=DMA1_Channel4
 Dma.USART1_TX.0.MemDataAlignment=DMA_MDATAALIGN_BYTE
@@ -63,6 +73,7 @@ MxCube.Version=4.27.0
 MxDb.Version=DB.4.0.270
 NVIC.BusFault_IRQn=true\:0\:0\:false\:false\:true\:true
 NVIC.DMA1_Channel4_IRQn=true\:0\:0\:false\:false\:true\:false
+NVIC.DMA1_Channel5_IRQn=true\:0\:0\:false\:false\:true\:false
 NVIC.DebugMonitor_IRQn=true\:0\:0\:false\:false\:true\:true
 NVIC.HardFault_IRQn=true\:0\:0\:false\:false\:true\:true
 NVIC.MemoryManagement_IRQn=true\:0\:0\:false\:false\:true\:true

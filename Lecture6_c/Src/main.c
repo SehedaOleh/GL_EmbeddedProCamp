@@ -49,6 +49,7 @@ SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
+DMA_HandleTypeDef hdma_usart1_rx;
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
@@ -120,10 +121,10 @@ int main(void)
 	while (1)
   {
   /* USER CODE END WHILE */
-			HAL_UART_Transmit_DMA(&huart1, str, sizeof(str)-1);
-			HAL_Delay(500);
-			HAL_UART_Receive_IT(&huart1, str, sizeof(str));
-			HAL_Delay(100);
+		HAL_UART_Transmit_DMA(&huart1, str, sizeof(str)-1);
+		HAL_Delay(500);
+		HAL_UART_Receive_IT(&huart1, str, sizeof(str));
+		HAL_Delay(100);
   /* USER CODE BEGIN 3 */
 
   }
@@ -267,6 +268,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel4_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 
 }
 
