@@ -78,12 +78,16 @@ int main(void)
 }
 void myTask_1( void* pvParameters)
 {
-	uint8_t my_task_count = 0;
+	volatile uint64_t sendQueue = 0;
+	
 	osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
 	TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
-	my_task_count = 0;	
+	
+	
 	for(;;)
   {
+		xQueueOverwrite( xQueue, (void const *)&sendQueue );
+		
 		osDelay(200);
     LED02OFF();
 		LED01ON();
@@ -91,26 +95,25 @@ void myTask_1( void* pvParameters)
 		LED01OFF();
 		LED02ON();
     osDelay(100);
-		my_task_count ++;
+		sendQueue += 10;
 	}
 		
 }
 /* Start vmyTaskCode*/
 void vmyTaskCode(void const* pvParameters)
 {
-	uint8_t count = 5;
+	
+	volatile uint64_t recQueue = 0;
+	
 	for (;;)
 	{
-		while ( count >= 1)
-		{
+			xQueueReceive(xQueue,(void* const)&recQueue, portMAX_DELAY);
 			LED08OFF();
 			LED07ON(); 
-			osDelay (100);
+			osDelay (recQueue);
 			LED07OFF();
 			LED08ON();
 			osDelay (100);
-			count --;
-		}
 		//vTaskDelete(NULL);
 	}
 		
