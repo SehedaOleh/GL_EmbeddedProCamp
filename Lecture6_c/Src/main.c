@@ -102,7 +102,17 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	//HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-
+	reset_SS_SPI3();
+	HAL_Delay(10);
+	HAL_SPI_Transmit (&hspi1, &dataTx[0], 1, 10);
+	HAL_SPI_Receive (&hspi1, &dataRx[0], 1, 10);
+	
+	if (dataRx[0] != 0)
+		{
+			LED01ON();
+			HAL_Delay(100);
+			LED01OFF();
+		}
 	//HAL_UART_Receive_IT(&huart1, str, sizeof(str));
 
 	while (1)
@@ -117,12 +127,7 @@ int main(void)
 //		}
 		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
 		reset_SS_SPI3();
-		if (dataRx[0] != 0)
-		{
-			LED01ON();
-			HAL_Delay(100);
-			LED01OFF();
-		}
+		
   /* USER CODE BEGIN 3 */
 		HAL_Delay(1000);
   }
