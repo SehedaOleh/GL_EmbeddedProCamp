@@ -5,6 +5,7 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
@@ -13,7 +14,13 @@ osThreadId myTask03Handle;
 
 TaskHandle_t myTaskHandle_1; //handler for myTask_1
 TaskHandle_t myTaskHandle; //handler for myTask
-BaseType_t xReturned;
+
+SemaphoreHandle_t xSemaphore = NULL;
+
+QueueHandle_t xQueue;
+
+#define SIZE_BUF 100
+volatile static unsigned char buf [SIZE_BUF];
 
 /* Private function prototypes -----------------------------------------------*/
 void StartDefaultTask(void const * argument);
@@ -32,6 +39,17 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_USB_PCD_Init();
+	
+	/* Create a queue to hold one unsigned long value. It is strongly
+    recommended *not* to use xQueueOverwrite() on queues that can
+    contain more than one value, and doing so will trigger an assertion
+    if configASSERT() is defined. */
+  xQueue = xQueueCreate( 1, sizeof( unsigned long ) );
+  if( xQueue == NULL )
+  {
+   /* The queue could not be created. */
+   while (1);  
+  }
 
 //  /* definition and creation of defaultTask */
 //  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
