@@ -22,17 +22,6 @@ void StartTask03(void const * argument);
 void vmyTaskCode(void const * pvParameters);
 void myTask_1(void* pvParameters);
 
-void vApplicationIdleHook(void)
-{
-		volatile int i = 100;
-//		LED01ON();
-		while (i)
-		{
-
-		i--;
-		}
-//		LED01OFF();
-}
 int main(void)
 {
   HAL_Init();
@@ -72,14 +61,11 @@ int main(void)
 void myTask_1( void* pvParameters)
 {
 	uint8_t my_task_count = 0;
+	osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
+	TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
+	my_task_count = 0;	
 	for(;;)
   {
-		if (12 == my_task_count)
-		{
-			osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
-			TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
-			my_task_count = 0;	
-		}			
 		osDelay(200);
     LED02OFF();
 		LED01ON();
@@ -107,7 +93,7 @@ void vmyTaskCode(void const* pvParameters)
 			osDelay (100);
 			count --;
 		}
-		vTaskDelete(NULL);
+		//vTaskDelete(NULL);
 	}
 		
 }
