@@ -87,9 +87,9 @@ int main(void)
 //   while (1);  
 //  }
 
-//  /* definition and creation of defaultTask */
-//  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-//  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
 //  /* definition and creation of myTask02 */
 //  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
@@ -164,6 +164,11 @@ void myTask_Philos_1( void* pvParameters)
 			osDelay(10);
 			xSemaphoreGive( xSemaphoreFork1 );
 		}
+		else
+		{
+			osDelay(1000);
+			xSemaphoreGive( xSemaphoreFork1 );
+		}
 	}
 }
 /* Start myTask_Philos_2*/
@@ -184,7 +189,12 @@ void myTask_Philos_2( void* pvParameters)
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork1);
 			}
-			xSemaphoreGive( xSemaphoreFork2 );
+			xSemaphoreGive( xSemaphoreFork2);
+		}
+		else
+		{
+			osDelay(1000);
+			xSemaphoreGive( xSemaphoreFork2);
 		}
 	}
 }
@@ -206,7 +216,12 @@ void myTask_Philos_3( void* pvParameters)
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork2);
 			}
-			xSemaphoreGive( xSemaphoreFork3 );
+			xSemaphoreGive( xSemaphoreFork3);
+		}
+		else
+		{
+			osDelay(1000);
+			xSemaphoreGive( xSemaphoreFork3);
 		}
 	}
 }
@@ -228,7 +243,12 @@ void myTask_Philos_4( void* pvParameters)
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork3);
 			}
-			xSemaphoreGive( xSemaphoreFork4 );
+			xSemaphoreGive( xSemaphoreFork4);
+		}
+		else
+		{
+			osDelay(1000);
+			xSemaphoreGive( xSemaphoreFork4);
 		}
 	}
 }
@@ -241,15 +261,20 @@ void myTask_Philos_5( void* pvParameters)
 			osDelay(100);
 			if(xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE )
 			{
-				LED08OFF();
-				LED07ON();
+				LED02OFF();
+				LED04ON();
 				osDelay(100);
-				LED07OFF();
-				LED08ON();
+				LED04OFF();
+				LED02ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork4);
 			}
-			xSemaphoreGive( xSemaphoreFork5 );
+			xSemaphoreGive( xSemaphoreFork5);
+		}
+		else
+		{
+			osDelay(1000);
+			xSemaphoreGive( xSemaphoreFork5);
 		}
 	}
 }
@@ -276,7 +301,7 @@ void vmyTaskCode(void const* pvParameters)
 	/* StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-	vTaskPrioritySet(NULL, 2);
+	//vTaskPrioritySet(NULL, 2);
 	for(;;)
   {
 	  LED02OFF();
