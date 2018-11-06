@@ -54,28 +54,66 @@ int main(void)
   if( xSemaphoreFork1 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
        while (1);    
-  } 
+  }
+	else
+	{
+		  if( xSemaphoreGive( xSemaphoreFork1 ) != pdTRUE )
+      {
+        while (1);
+      }
+	}	
+	
 	xSemaphoreFork2 = xSemaphoreCreateBinary();  
   if( xSemaphoreFork2 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
        while (1);    
   }  
+	else
+	{
+		  if( xSemaphoreGive( xSemaphoreFork2 ) != pdTRUE )
+      {
+        while (1);
+      }
+	}	
+	
 	xSemaphoreFork3 = xSemaphoreCreateBinary();  
   if( xSemaphoreFork3 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
        while (1);    
-  }  
+  }
+	else
+	{
+		  if( xSemaphoreGive( xSemaphoreFork3 ) != pdTRUE )
+      {
+        while (1);
+      }
+	}	
+	
 	xSemaphoreFork4 = xSemaphoreCreateBinary();  
   if( xSemaphoreFork4 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
        while (1);    
-  }  
+  }
+	else
+	{
+		  if( xSemaphoreGive( xSemaphoreFork4 ) != pdTRUE )
+      {
+        while (1);
+      }
+	}	  
+	
 	xSemaphoreFork5 = xSemaphoreCreateBinary();  
   if( xSemaphoreFork5 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
        while (1);    
   }  	
-	
+	else
+	{
+		  if( xSemaphoreGive( xSemaphoreFork5 ) != pdTRUE )
+      {
+        while (1);
+      }
+	}	
 //	/* Create a queue to hold one unsigned long value. It is strongly
 //    recommended *not* to use xQueueOverwrite() on queues that can
 //    contain more than one value, and doing so will trigger an assertion
