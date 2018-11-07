@@ -9,6 +9,7 @@
 
 #define SIZE_BUF 100
 #define RESET_TIMEOUT_SEC 5
+#define Philosofer_DELAY 0x0FFF
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
@@ -192,7 +193,7 @@ void myTask_Philos_1( void* pvParameters)
 		if( (xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphoreFork5,  Philosofer_DELAY ) == pdTRUE )
 			{
 				LED02OFF();
 				LED01ON();
@@ -201,10 +202,10 @@ void myTask_Philos_1( void* pvParameters)
 				LED02ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork5 );
+				osDelay(100);
+				xSemaphoreGive( xSemaphoreFork1 );
+				TIM1_Count_Sec = 0;
 			}
-			//sendQueue += 10;
-			osDelay(10);
-			xSemaphoreGive( xSemaphoreFork1 );
 		}
 		else
 		{
@@ -223,7 +224,7 @@ void myTask_Philos_2( void* pvParameters)
 		if( (xSemaphoreTake( xSemaphoreFork2,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphoreFork1,  Philosofer_DELAY ) == pdTRUE )
 			{
 				LED04OFF();
 				LED03ON();
@@ -232,12 +233,14 @@ void myTask_Philos_2( void* pvParameters)
 				LED04ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork1);
+				osDelay(100);
+				xSemaphoreGive( xSemaphoreFork2);
+				TIM1_Count_Sec = 0;
 			}
-			xSemaphoreGive( xSemaphoreFork2);
 		}
 		else
 		{
-			osDelay(10);
+			osDelay(100);
 			xSemaphoreGive( xSemaphoreFork2);
 		}
 		osDelay(10);
@@ -251,7 +254,7 @@ void myTask_Philos_3( void* pvParameters)
 		if( (xSemaphoreTake( xSemaphoreFork3,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
-			if(xSemaphoreTake( xSemaphoreFork2,  portMAX_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphoreFork2,  Philosofer_DELAY ) == pdTRUE )
 			{
 				LED06OFF();
 				LED05ON();
@@ -260,12 +263,14 @@ void myTask_Philos_3( void* pvParameters)
 				LED06ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork2);
+				osDelay(100);
+				xSemaphoreGive( xSemaphoreFork3 );
+				TIM1_Count_Sec = 0;
 			}
-			xSemaphoreGive( xSemaphoreFork3);
 		}
 		else
 		{
-			osDelay(10);
+			osDelay(100);
 			xSemaphoreGive( xSemaphoreFork3);
 		}
 		osDelay(10);
@@ -279,7 +284,7 @@ void myTask_Philos_4( void* pvParameters)
 		if( (xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
-			if(xSemaphoreTake( xSemaphoreFork3,  portMAX_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphoreFork3,  Philosofer_DELAY ) == pdTRUE )
 			{
 				LED08OFF();
 				LED07ON();
@@ -288,8 +293,10 @@ void myTask_Philos_4( void* pvParameters)
 				LED08ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork3);
+				osDelay(100);
+				xSemaphoreGive( xSemaphoreFork4 );
+				TIM1_Count_Sec = 0;
 			}
-			xSemaphoreGive( xSemaphoreFork4);
 		}
 		else
 		{
@@ -306,7 +313,7 @@ void myTask_Philos_5( void* pvParameters)
 		if( (xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
-			if(xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphoreFork4,  Philosofer_DELAY ) == pdTRUE )
 			{
 				LED02OFF();
 				LED04ON();
@@ -315,8 +322,10 @@ void myTask_Philos_5( void* pvParameters)
 				LED02ON();
 				osDelay(100);
 				xSemaphoreGive( xSemaphoreFork4);
+				osDelay(100);
+				xSemaphoreGive( xSemaphoreFork5 );
+				TIM1_Count_Sec = 0;
 			}
-			xSemaphoreGive( xSemaphoreFork5);
 		}
 		else
 		{
@@ -336,12 +345,12 @@ void vmyTaskCode(void const* pvParameters)
 	for (;;)
 	{
 //			xQueueReceive(xQueue,(void* const)&recQueue, portMAX_DELAY);
-			LED08OFF();
-			LED07ON(); 
-			osDelay (100);
-			LED07OFF();
-			LED08ON();
-			osDelay (100);
+//			LED08OFF();
+//			LED07ON(); 
+//			osDelay (100);
+//			LED07OFF();
+//			LED08ON();
+			osDelay (10);
 		//vTaskDelete(NULL);
 	}
 		
@@ -408,7 +417,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		if( 10 == TIM1_Count_Sec )
 		{
 			TIM1_Count_Sec = 0;	//RESET after 10 seconds
-						LED01OFF();		// for debug
+//						LED01OFF();		// for debug
 		}
   }
   if(TIM1_Count>=10000000) 
