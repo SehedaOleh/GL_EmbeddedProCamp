@@ -66,7 +66,7 @@ int main(void)
         while (1);
       }
 	}	
-	
+
 	xSemaphoreFork2 = xSemaphoreCreateBinary();  
   if( xSemaphoreFork2 == NULL ) 
   {    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
@@ -130,10 +130,10 @@ int main(void)
 //  }
 
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+//  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+//  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-//  /* definition and creation of myTask02 */
+  /* definition and creation of myTask02 */
 //  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
 //  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
@@ -191,7 +191,7 @@ void myTask_Philos_1( void* pvParameters)
 		//xQueueOverwrite( xQueue, (void const *)&sendQueue );
 		if( (xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5 )
 		{ 
-			osDelay(100);
+			osDelay(10);
 			if(xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE )
 			{
 				LED02OFF();
@@ -209,9 +209,10 @@ void myTask_Philos_1( void* pvParameters)
 		else
 		{
 			xSemaphoreGive( xSemaphoreFork1 );
-			osDelay(1000);
-			
+			osDelay(10);
+			LED01ON();
 		}
+		osDelay(10);
 	}
 }
 /* Start myTask_Philos_2*/
@@ -219,9 +220,9 @@ void myTask_Philos_2( void* pvParameters)
 {
 	for(;;)
   {
-		if( xSemaphoreTake( xSemaphoreFork2,  portMAX_DELAY ) == pdTRUE )
+		if( (xSemaphoreTake( xSemaphoreFork2,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
-			osDelay(100);
+			osDelay(10);
 			if(xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE )
 			{
 				LED04OFF();
@@ -236,9 +237,10 @@ void myTask_Philos_2( void* pvParameters)
 		}
 		else
 		{
-			osDelay(1000);
+			osDelay(10);
 			xSemaphoreGive( xSemaphoreFork2);
 		}
+		osDelay(10);
 	}
 }
 /* Start myTask_Philos_3*/
@@ -246,7 +248,7 @@ void myTask_Philos_3( void* pvParameters)
 {
 	for(;;)
   {
-		if( xSemaphoreTake( xSemaphoreFork3,  portMAX_DELAY ) == pdTRUE )
+		if( (xSemaphoreTake( xSemaphoreFork3,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
 			if(xSemaphoreTake( xSemaphoreFork2,  portMAX_DELAY ) == pdTRUE )
@@ -263,9 +265,10 @@ void myTask_Philos_3( void* pvParameters)
 		}
 		else
 		{
-			osDelay(1000);
+			osDelay(10);
 			xSemaphoreGive( xSemaphoreFork3);
 		}
+		osDelay(10);
 	}
 }
 /* Start myTask_Philos_4*/
@@ -273,7 +276,7 @@ void myTask_Philos_4( void* pvParameters)
 {
 	for(;;)
   {
-		if( xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE )
+		if( (xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
 			if(xSemaphoreTake( xSemaphoreFork3,  portMAX_DELAY ) == pdTRUE )
@@ -290,16 +293,17 @@ void myTask_Philos_4( void* pvParameters)
 		}
 		else
 		{
-			osDelay(1000);
+			osDelay(10);
 			xSemaphoreGive( xSemaphoreFork4);
 		}
+		osDelay(10);
 	}
 }
 void myTask_Philos_5( void* pvParameters)
 {
 	for(;;)
   {
-		if( xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE )
+		if( (xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE)&& TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
 			if(xSemaphoreTake( xSemaphoreFork4,  portMAX_DELAY ) == pdTRUE )
@@ -316,9 +320,10 @@ void myTask_Philos_5( void* pvParameters)
 		}
 		else
 		{
-			osDelay(1000);
+			osDelay(10);
 			xSemaphoreGive( xSemaphoreFork5);
 		}
+		osDelay(10);
 	}
 }
 
@@ -400,6 +405,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(TIM1_Count%1000==0)
   {
     TIM1_Count_Sec++; // one second
+		if( 10 == TIM1_Count_Sec )
+		{
+			TIM1_Count_Sec = 0;	//RESET after 10 seconds
+						LED01OFF();		// for debug
+		}
   }
   if(TIM1_Count>=10000000) 
 	{
