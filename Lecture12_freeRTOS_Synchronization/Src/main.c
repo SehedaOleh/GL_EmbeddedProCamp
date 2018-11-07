@@ -7,6 +7,8 @@
 #include "task.h"
 #include "queue.h"
 
+#define SIZE_BUF 100
+#define RESET_TIMEOUT_SEC 5
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
@@ -26,7 +28,9 @@ SemaphoreHandle_t xSemaphoreFork5 = NULL;
 
 QueueHandle_t xQueue;
 
-#define SIZE_BUF 100
+volatile uint32_t TIM1_Count = 0;			//counter for ms	 
+volatile uint32_t TIM1_Count_Sec = 0;	// counter for s
+
 volatile static unsigned char buf [SIZE_BUF];
 
 /* Private function prototypes -----------------------------------------------*/
@@ -185,7 +189,7 @@ void myTask_Philos_1( void* pvParameters)
 	for(;;)
   {
 		//xQueueOverwrite( xQueue, (void const *)&sendQueue );
-		if( xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE )
+		if( (xSemaphoreTake( xSemaphoreFork1,  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5 )
 		{ 
 			osDelay(100);
 			if(xSemaphoreTake( xSemaphoreFork5,  portMAX_DELAY ) == pdTRUE )
@@ -204,8 +208,9 @@ void myTask_Philos_1( void* pvParameters)
 		}
 		else
 		{
-			osDelay(1000);
 			xSemaphoreGive( xSemaphoreFork1 );
+			osDelay(1000);
+			
 		}
 	}
 }
@@ -391,6 +396,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM1) {
     HAL_IncTick();
   }
+	TIM1_Count++; // one ms
+  if(TIM1_Count%1000==0)
+  {
+    TIM1_Count_Sec++; // one second
+  }
+  if(TIM1_Count>=10000000) 
+	{
+		TIM1_Count=0; // reset
+	}
 }
 
 /**
