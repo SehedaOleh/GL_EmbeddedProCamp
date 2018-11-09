@@ -162,9 +162,8 @@ void takeFork (uint8_t philosopher)
 /* Start myTask_Philos_1*/
 void myTask_Philos_1( void* pvParameters)
 {
-	osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
-	TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
-	
+//	osThreadDef(myTask, vmyTaskCode, osPriorityLow, 0, 32);
+//	TaskHandle_t myHandle = osThreadCreate(osThread(myTask), NULL);
 	for(;;)
   {
 		// Philosopher is thinking
@@ -182,7 +181,7 @@ void myTask_Philos_1( void* pvParameters)
 				LED02ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphorePhilosofer[0] );
+				xSemaphoreGive( xSemaphorePhilosofer[PHIL1] );
 		}
 		else
 		{
@@ -195,6 +194,13 @@ void myTask_Philos_2( void* pvParameters)
 {
 	for(;;)
   {
+		// Philosopher is thinking
+		osDelay(100);
+		//trying to take forks
+		takeFork (PHIL2);
+		
+		if(xSemaphoreTake( xSemaphorePhilosofer[PHIL2],  portMAX_DELAY ) == pdTRUE && philosopherStatus[PHIL2] == Phiholofer_EATING) 
+		{ 
 		
 				/******** eating *******/
 				LED04OFF();
@@ -204,6 +210,12 @@ void myTask_Philos_2( void* pvParameters)
 				LED04ON();
 				osDelay(100);
 				/******** eating *******/
+			xSemaphoreGive( xSemaphorePhilosofer[PHIL2] );
+		}
+		else
+		{
+			osDelay(10);
+		}
 					
 	}
 }
@@ -214,11 +226,11 @@ void myTask_Philos_3( void* pvParameters)
   {
 		
 				/******** eating *******/
-				LED06OFF();
-				LED05ON();
-				osDelay(100);
-				LED05OFF();
-				LED06ON();
+//				LED06OFF();
+//				LED05ON();
+//				osDelay(100);
+//				LED05OFF();
+//				LED06ON();
 				osDelay(100);
 				/******** eating *******/
 			
@@ -230,11 +242,11 @@ void myTask_Philos_4( void* pvParameters)
 	for(;;)
   {
 				/******** eating *******/
-				LED08OFF();
-				LED07ON();
-				osDelay(100);
-				LED07OFF();
-				LED08ON();
+//				LED08OFF();
+//				LED07ON();
+//				osDelay(100);
+//				LED07OFF();
+//				LED08ON();
 				osDelay(100);
 				/******** eating *******/
 
@@ -246,11 +258,11 @@ void myTask_Philos_5( void* pvParameters)
   {
 		
 				/******** eating *******/
-				LED06OFF();
-				LED04ON();
-				osDelay(100);
-				LED04OFF();
-				LED06ON();
+//				LED06OFF();
+//				LED04ON();
+//				osDelay(100);
+//				LED04OFF();
+//				LED06ON();
 				osDelay(100);
 				/******** eating *******/
 	
