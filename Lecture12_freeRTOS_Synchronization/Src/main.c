@@ -47,6 +47,7 @@ void myTask_Philos_3(void* pvParameters);
 void myTask_Philos_4(void* pvParameters);
 void myTask_Philos_5(void* pvParameters);
 void takeFork (uint8_t);
+void tryToEat(uint8_t);
 void putFork (uint8_t);
 /* ---------------------------------------------------------------------------*/
 int main(void)
@@ -141,14 +142,7 @@ void takeFork (uint8_t philosopher)
     {
 			philosopherStatus[philosopher] = Phiholofer_WAITING;
 			//taking forks
-			if (philosopherStatus[philosopher] == Phiholofer_WAITING 
-				  && philosopherStatus[LEFT_Fork_NUMBER(philosopher)] != Phiholofer_EATING 
-					&& philosopherStatus[RIGHT_Fork_NUMBER(philosopher)] != Phiholofer_EATING) 
-			{
-				philosopherStatus[philosopher] = Phiholofer_EATING;
-				// release semaphor for philosopher how whants to eat
-				xSemaphoreGive( xSemaphorePhilosofer[philosopher] );
-			}
+			tryToEat(philosopher);
 			//taking semaphor for philosofer how waithing for forks
 			osSemaphoreRelease(xSemaphoreTakingFork);
 		}
@@ -159,6 +153,22 @@ void takeFork (uint8_t philosopher)
 		}
 	}
 }
+void tryToEat(uint8_t philosopher)
+{
+		if (philosopherStatus[philosopher] == Phiholofer_WAITING 
+				  && philosopherStatus[LEFT_Fork_NUMBER(philosopher)] != Phiholofer_EATING 
+					&& philosopherStatus[RIGHT_Fork_NUMBER(philosopher)] != Phiholofer_EATING) 
+			{
+				philosopherStatus[philosopher] = Phiholofer_EATING;
+				// release semaphor for philosopher how whants to eat
+				xSemaphoreGive( xSemaphorePhilosofer[philosopher] );
+			}
+}
+/**
+  * @brief  This function is executed when one of the philosophers releasin the forks.
+  * @param  philosopher: Number of philosopher who want release the forks.
+  * @retval None
+  */
 void putFork (uint8_t philosopher)
 {
 	if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
