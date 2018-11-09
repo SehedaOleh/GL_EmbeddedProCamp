@@ -222,7 +222,7 @@ void myTask_Philos_2( void* pvParameters)
 	for(;;)
   {
 		// Philosopher is thinking
-		osDelay(70);
+		osDelay(100);
 		//trying to take forks
 		takeFork (PHIL2);
 		
@@ -252,15 +252,28 @@ void myTask_Philos_3( void* pvParameters)
 {
 	for(;;)
   {
+		// Philosopher is thinking
+		osDelay(70);
+		//trying to take forks
+		takeFork (PHIL3);
 		
+		if(xSemaphoreTake( xSemaphorePhilosofer[PHIL3],  portMAX_DELAY ) == pdTRUE && philosopherStatus[PHIL3] == Phiholofer_EATING) 
+		{ 
 				/******** eating *******/
-//				LED06OFF();
-//				LED05ON();
-//				osDelay(100);
-//				LED05OFF();
-//				LED06ON();
+				LED06OFF();
+				LED05ON();
+				osDelay(100);
+				LED05OFF();
+				LED06ON();
 				osDelay(100);
 				/******** eating *******/
+				xSemaphoreGive(xSemaphorePhilosofer[PHIL3]);
+				putFork(PHIL3);
+			}
+		else
+		{
+			osDelay(10);
+		}
 			
 	}
 }
@@ -269,22 +282,41 @@ void myTask_Philos_4( void* pvParameters)
 {
 	for(;;)
   {
+		// Philosopher is thinking
+		osDelay(100);
+		//trying to take forks
+		takeFork (PHIL4);
+		
+		if(xSemaphoreTake( xSemaphorePhilosofer[PHIL4],  portMAX_DELAY ) == pdTRUE && philosopherStatus[PHIL4] == Phiholofer_EATING) 
+		{ 
 				/******** eating *******/
-//				LED08OFF();
-//				LED07ON();
-//				osDelay(100);
-//				LED07OFF();
-//				LED08ON();
+				LED08OFF();
+				LED07ON();
+				osDelay(100);
+				LED07OFF();
+				LED08ON();
 				osDelay(100);
 				/******** eating *******/
-
+				xSemaphoreGive(xSemaphorePhilosofer[PHIL4]);
+				putFork(PHIL4);
+			}
+		else
+		{
+			osDelay(10);
+		}
 	}
 }
 void myTask_Philos_5( void* pvParameters)
 {
 	for(;;)
   {
+		// Philosopher is thinking
+		osDelay(100);
+		//trying to take forks
+		takeFork (PHIL5);
 		
+		if(xSemaphoreTake( xSemaphorePhilosofer[PHIL5],  portMAX_DELAY ) == pdTRUE && philosopherStatus[PHIL5] == Phiholofer_EATING) 
+		{ 
 				/******** eating *******/
 //				LED06OFF();
 //				LED04ON();
@@ -293,7 +325,13 @@ void myTask_Philos_5( void* pvParameters)
 //				LED06ON();
 				osDelay(100);
 				/******** eating *******/
-	
+				xSemaphoreGive(xSemaphorePhilosofer[PHIL5]);
+				putFork(PHIL5);
+			}
+		else
+		{
+			osDelay(10);
+		}
 	}
 }
 
