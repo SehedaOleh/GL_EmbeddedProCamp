@@ -10,17 +10,20 @@
 #define SIZE_BUF 100
 #define RESET_TIMEOUT_SEC 5
 #define Philosofer_DELAY 0x0FFF
-#define Philosofer_Number 5
+#define Philosofer_NUMBER 5
+
+#define LEFT_Fork_NUMBER 	(i + Philosofer_NUMBER - 1) % Philosofer_NUMBER 
+#define RIGHT_Fork_NUMBER (i + 1) % Philosofer_NUMBER
+
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
 osThreadId myTask03Handle;
 
-TaskHandle_t myTaskHandle[Philosofer_Number]; //handler for myTask_Philos_1_to_5
+TaskHandle_t myTaskHandle[Philosofer_NUMBER]; //handler for myTask_Philos_1_to_5
 
-SemaphoreHandle_t xSemaphoreFork[Philosofer_Number] = {NULL};
-
-QueueHandle_t xQueue;
+SemaphoreHandle_t xSemaphoreFork[Philosofer_NUMBER] = {NULL}; //semaphores for each of fork
+SemaphoreHandle_t xSemaphoreTakingFork = NULL; // semafor for fork taking
 
 volatile uint32_t TIM1_Count = 0;			//counter for ms	 
 volatile uint32_t TIM1_Count_Sec = 0;	// counter for s
@@ -34,6 +37,8 @@ void myTask_Philos_2(void* pvParameters);
 void myTask_Philos_3(void* pvParameters);
 void myTask_Philos_4(void* pvParameters);
 void myTask_Philos_5(void* pvParameters);
+void takeFork (uint8_t);
+
 int main(void)
 {
   HAL_Init();
@@ -44,12 +49,12 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_USB_PCD_Init();
-	
-	for(int i = 0; i < Philosofer_Number; i++)
+	// creating semaphors for each forks
+	for(int i = 0; i < Philosofer_NUMBER; i++)
 	{
 		xSemaphoreFork[i] = xSemaphoreCreateBinary();  
 		if( xSemaphoreFork[i]  == NULL ) 
-		{    /* There was insufficient FreeRTOS heap available for the semaphore to         be created successfully. */
+		{    /* There was insufficient FreeRTOS heap available for the semaphore to be created successfully. */
 				 while (1);    
 		}
 		else
@@ -60,6 +65,20 @@ int main(void)
 				}
 		}	
 	}
+	// creating semaphor for taking fork
+	xSemaphoreTakingFork = xSemaphoreCreateBinary();
+	if( xSemaphoreTakingFork  == NULL ) 
+		{    /* There was insufficient FreeRTOS heap available for the semaphore to be created successfully. */
+				 while (1);    
+		}
+		else
+		{
+				if( xSemaphoreGive(xSemaphoreTakingFork) != pdTRUE )
+				{
+					while (1);
+				}
+		}	
+		
 		xTaskCreate(myTask_Philos_1,       /* Function that implements the task. */
 								"philosopher1",          /* Text name for the task. */
 								64,      /* Stack size in words, not bytes. */
@@ -98,6 +117,21 @@ int main(void)
   while (1)
   {
   }
+}
+/**
+  * @brief  This function is executed when one of the philosophers try to take a fork.
+  * @param  philosopher: Number of philosopher who want to take a fork.
+  * @retval None
+  */
+void takeFork (uint8_t philosopher)
+{
+	if (xSemaphoreTakingFork != NULL)
+  {
+    if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
+    {
+		}
+	}
+	
 }
 /* Start myTask_Philos_1*/
 void myTask_Philos_1( void* pvParameters)
