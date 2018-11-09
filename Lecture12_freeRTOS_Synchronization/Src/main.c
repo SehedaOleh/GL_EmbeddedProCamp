@@ -47,6 +47,7 @@ void myTask_Philos_3(void* pvParameters);
 void myTask_Philos_4(void* pvParameters);
 void myTask_Philos_5(void* pvParameters);
 void takeFork (uint8_t);
+void putFork (uint8_t);
 /* ---------------------------------------------------------------------------*/
 int main(void)
 {
@@ -157,8 +158,16 @@ void takeFork (uint8_t philosopher)
 			xSemaphoreTake( xSemaphorePhilosofer[philosopher],  portMAX_DELAY );
 		}
 	}
-	
 }
+void putFork (uint8_t philosopher)
+{
+	if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
+	{
+		philosopherStatus[philosopher] = Phiholofer_THINKING;
+		osSemaphoreRelease(xSemaphoreTakingFork);
+	}
+}
+
 /* Start myTask_Philos_1*/
 void myTask_Philos_1( void* pvParameters)
 {
@@ -181,7 +190,8 @@ void myTask_Philos_1( void* pvParameters)
 				LED02ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphorePhilosofer[PHIL1] );
+				xSemaphoreGive( xSemaphorePhilosofer[PHIL1]);
+				putFork(PHIL1);
 		}
 		else
 		{
@@ -195,7 +205,7 @@ void myTask_Philos_2( void* pvParameters)
 	for(;;)
   {
 		// Philosopher is thinking
-		osDelay(100);
+		osDelay(70);
 		//trying to take forks
 		takeFork (PHIL2);
 		
@@ -210,8 +220,9 @@ void myTask_Philos_2( void* pvParameters)
 				LED04ON();
 				osDelay(100);
 				/******** eating *******/
-			xSemaphoreGive( xSemaphorePhilosofer[PHIL2] );
-		}
+				xSemaphoreGive(xSemaphorePhilosofer[PHIL2]);
+				putFork(PHIL2);
+			}
 		else
 		{
 			osDelay(10);
