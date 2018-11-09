@@ -11,12 +11,12 @@
 #define RESET_TIMEOUT_SEC   5
 #define Philosofer_DELAY    0x0FFF
 #define Philosofer_NUMBER   5
-#define Phiholofer_THINKING 0	//status for time when philosopher is thinking
+#define Phiholofer_THINKING 0	  //status for time when philosopher is thinking
 #define Phiholofer_WAITING 	1 	//status for time when philosopher is waiting for forks
 #define Phiholofer_EATING 	2  	//status for time when philosopher is eating
 
-#define LEFT_Fork_NUMBER 	(i + Philosofer_NUMBER - 1) % Philosofer_NUMBER 
-#define RIGHT_Fork_NUMBER (i + 1) % Philosofer_NUMBER
+#define LEFT_Fork_NUMBER(i) 	(i + Philosofer_NUMBER - 1) % Philosofer_NUMBER 
+#define RIGHT_Fork_NUMBER(i)  (i + 1) % Philosofer_NUMBER
 
 /* Private variables ---------------------------------------------------------*/
 osThreadId defaultTaskHandle;
@@ -25,12 +25,12 @@ osThreadId myTask03Handle;
 
 TaskHandle_t myTaskHandle[Philosofer_NUMBER]; //handler for myTask_Philos_1_to_5
 
-SemaphoreHandle_t xSemaphoreFork[Philosofer_NUMBER] = {NULL}; //semaphores for each of fork
+SemaphoreHandle_t xSemaphorePhilosofer[Philosofer_NUMBER] = {NULL}; //semaphores for each of philosofer
 SemaphoreHandle_t xSemaphoreTakingFork = NULL; // semafor for fork taking
 
 volatile uint32_t TIM1_Count = 0;			//counter for ms	 
 volatile uint32_t TIM1_Count_Sec = 0;	// counter for s
-volatile uint8_t philosopherStatus [Philosofer_NUMBER] = {0};
+volatile uint8_t philosopherStatus [Philosofer_NUMBER] = {0}; //for start of the program all philosophers are thinking
 
 volatile static unsigned char buf [SIZE_BUF];
 
@@ -56,14 +56,14 @@ int main(void)
 	// creating semaphors for each forks
 	for(int i = 0; i < Philosofer_NUMBER; i++)
 	{
-		xSemaphoreFork[i] = xSemaphoreCreateBinary();  
-		if( xSemaphoreFork[i]  == NULL ) 
+		xSemaphorePhilosofer[i] = xSemaphoreCreateBinary();  
+		if( xSemaphorePhilosofer[i]  == NULL ) 
 		{    /* There was insufficient FreeRTOS heap available for the semaphore to be created successfully. */
 				 while (1);    
 		}
 		else
 		{
-				if( xSemaphoreGive( xSemaphoreFork[i]  ) != pdTRUE )
+				if( xSemaphoreGive( xSemaphorePhilosofer[i]  ) != pdTRUE )
 				{
 					while (1);
 				}
@@ -133,7 +133,14 @@ void takeFork (uint8_t philosopher)
   {
     if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
     {
-			
+			philosopherStatus[philosopher] = Phiholofer_WAITING;
+			//taking forks
+			if (philosopherStatus[philosopher] == Phiholofer_WAITING 
+				  && philosopherStatus[LEFT_Fork_NUMBER(philosopher)] != Phiholofer_EATING 
+					&& philosopherStatus[RIGHT_Fork_NUMBER(philosopher)] != Phiholofer_EATING) 
+			{
+				philosopherStatus[philosopher] = Phiholofer_EATING;
+			}
 			osSemaphoreRelease(xSemaphoreTakingFork);
 		}
 	}
@@ -147,10 +154,10 @@ void myTask_Philos_1( void* pvParameters)
 	for(;;)
   {
 		//xQueueOverwrite( xQueue, (void const *)&sendQueue );
-		if( (xSemaphoreTake( xSemaphoreFork[0],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
+		if( (xSemaphoreTake( xSemaphorePhilosofer[0],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork[4],  Philosofer_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphorePhilosofer[4],  Philosofer_DELAY ) == pdTRUE )
 			{
 				/******** eating *******/
 				LED02OFF();
@@ -160,9 +167,9 @@ void myTask_Philos_1( void* pvParameters)
 				LED02ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphoreFork[4] );
+				xSemaphoreGive( xSemaphorePhilosofer[4] );
 				osDelay(10);
-				xSemaphoreGive( xSemaphoreFork[0] );
+				xSemaphoreGive( xSemaphorePhilosofer[0] );
 				TIM1_Count_Sec = 0;
 			}
 			else
@@ -172,7 +179,7 @@ void myTask_Philos_1( void* pvParameters)
 		}
 		else if (TIM1_Count_Sec >= 5)
 	  {
-			xSemaphoreGive( xSemaphoreFork[0] );
+			xSemaphoreGive( xSemaphorePhilosofer[0] );
 			osDelay(10);
 			LED01ON();
 		}
@@ -187,10 +194,10 @@ void myTask_Philos_2( void* pvParameters)
 {
 	for(;;)
   {
-		if( (xSemaphoreTake( xSemaphoreFork[1],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
+		if( (xSemaphoreTake( xSemaphorePhilosofer[1],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork[0],  Philosofer_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphorePhilosofer[0],  Philosofer_DELAY ) == pdTRUE )
 			{
 				/******** eating *******/
 				LED04OFF();
@@ -200,9 +207,9 @@ void myTask_Philos_2( void* pvParameters)
 				LED04ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphoreFork[0] );
+				xSemaphoreGive( xSemaphorePhilosofer[0] );
 				osDelay(10);
-				xSemaphoreGive( xSemaphoreFork[1] );
+				xSemaphoreGive( xSemaphorePhilosofer[1] );
 				TIM1_Count_Sec = 0;
 			}
 			else
@@ -212,7 +219,7 @@ void myTask_Philos_2( void* pvParameters)
 		}
 		else if (TIM1_Count_Sec >= 5)
 	  {
-			xSemaphoreGive( xSemaphoreFork[1] );
+			xSemaphoreGive( xSemaphorePhilosofer[1] );
 			osDelay(10);
 			LED01ON();
 		}
@@ -227,10 +234,10 @@ void myTask_Philos_3( void* pvParameters)
 {
 	for(;;)
   {
-		if( (xSemaphoreTake( xSemaphoreFork[2],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
+		if( (xSemaphoreTake( xSemaphorePhilosofer[2],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork[1],  Philosofer_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphorePhilosofer[1],  Philosofer_DELAY ) == pdTRUE )
 			{
 				/******** eating *******/
 				LED06OFF();
@@ -240,9 +247,9 @@ void myTask_Philos_3( void* pvParameters)
 				LED06ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphoreFork[1]);
+				xSemaphoreGive( xSemaphorePhilosofer[1]);
 				osDelay(10);
-				xSemaphoreGive( xSemaphoreFork[2]);
+				xSemaphoreGive( xSemaphorePhilosofer[2]);
 				TIM1_Count_Sec = 0;
 			}
 			else
@@ -252,7 +259,7 @@ void myTask_Philos_3( void* pvParameters)
 		}
 		else if (TIM1_Count_Sec >= 5)
 	  {
-			xSemaphoreGive( xSemaphoreFork[2] );
+			xSemaphoreGive( xSemaphorePhilosofer[2] );
 			osDelay(10);
 			LED01ON();
 		}
@@ -267,10 +274,10 @@ void myTask_Philos_4( void* pvParameters)
 {
 	for(;;)
   {
-		if( (xSemaphoreTake( xSemaphoreFork[3],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
+		if( (xSemaphoreTake( xSemaphorePhilosofer[3],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork[2],  Philosofer_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphorePhilosofer[2],  Philosofer_DELAY ) == pdTRUE )
 			{
 				/******** eating *******/
 				LED08OFF();
@@ -280,9 +287,9 @@ void myTask_Philos_4( void* pvParameters)
 				LED08ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphoreFork[2]);
+				xSemaphoreGive( xSemaphorePhilosofer[2]);
 				osDelay(10);
-				xSemaphoreGive( xSemaphoreFork[3]);
+				xSemaphoreGive( xSemaphorePhilosofer[3]);
 				TIM1_Count_Sec = 0;
 			}
 			else
@@ -292,7 +299,7 @@ void myTask_Philos_4( void* pvParameters)
 		}
 		else if (TIM1_Count_Sec >= 5)
 	  {
-			xSemaphoreGive( xSemaphoreFork[3] );
+			xSemaphoreGive( xSemaphorePhilosofer[3] );
 			osDelay(10);
 			LED01ON();
 		}
@@ -306,10 +313,10 @@ void myTask_Philos_5( void* pvParameters)
 {
 	for(;;)
   {
-		if( (xSemaphoreTake( xSemaphoreFork[4],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
+		if( (xSemaphoreTake( xSemaphorePhilosofer[4],  portMAX_DELAY ) == pdTRUE) && TIM1_Count_Sec <= 5)
 		{ 
 			osDelay(10);
-			if(xSemaphoreTake( xSemaphoreFork[3],  Philosofer_DELAY ) == pdTRUE )
+			if(xSemaphoreTake( xSemaphorePhilosofer[3],  Philosofer_DELAY ) == pdTRUE )
 			{
 				/******** eating *******/
 				LED06OFF();
@@ -319,9 +326,9 @@ void myTask_Philos_5( void* pvParameters)
 				LED06ON();
 				osDelay(100);
 				/******** eating *******/
-				xSemaphoreGive( xSemaphoreFork[3]);
+				xSemaphoreGive( xSemaphorePhilosofer[3]);
 				osDelay(10);
-				xSemaphoreGive( xSemaphoreFork[4]);
+				xSemaphoreGive( xSemaphorePhilosofer[4]);
 				TIM1_Count_Sec = 0;
 			}
 			else
@@ -331,7 +338,7 @@ void myTask_Philos_5( void* pvParameters)
 		}
 		else if (TIM1_Count_Sec >= 5)
 	  {
-			xSemaphoreGive( xSemaphoreFork[4] );
+			xSemaphoreGive( xSemaphorePhilosofer[4] );
 			osDelay(10);
 			LED01ON();
 		}
@@ -373,7 +380,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //			TIM1_Count_Sec = 0;	//RESET after 10 seconds
 //			for(int i = 0; i < Philosofer_Number; i++)
 //			{
-//				xSemaphoreGive( xSemaphoreFork[i]);
+//				xSemaphoreGive( xSemaphorePhilosofer[i]);
 //			}
 //						LED01OFF();		// for debug
 //		}
