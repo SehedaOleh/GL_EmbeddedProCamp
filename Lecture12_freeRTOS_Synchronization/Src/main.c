@@ -7,10 +7,13 @@
 #include "task.h"
 #include "queue.h"
 
-#define SIZE_BUF 100
-#define RESET_TIMEOUT_SEC 5
-#define Philosofer_DELAY 0x0FFF
-#define Philosofer_NUMBER 5
+#define SIZE_BUF 						100
+#define RESET_TIMEOUT_SEC   5
+#define Philosofer_DELAY    0x0FFF
+#define Philosofer_NUMBER   5
+#define Phiholofer_THINKING 0	//status for time when philosopher is thinking
+#define Phiholofer_WAITING 	1 	//status for time when philosopher is waiting for forks
+#define Phiholofer_EATING 	2  	//status for time when philosopher is eating
 
 #define LEFT_Fork_NUMBER 	(i + Philosofer_NUMBER - 1) % Philosofer_NUMBER 
 #define RIGHT_Fork_NUMBER (i + 1) % Philosofer_NUMBER
@@ -27,6 +30,7 @@ SemaphoreHandle_t xSemaphoreTakingFork = NULL; // semafor for fork taking
 
 volatile uint32_t TIM1_Count = 0;			//counter for ms	 
 volatile uint32_t TIM1_Count_Sec = 0;	// counter for s
+volatile uint8_t philosopherStatus [Philosofer_NUMBER] = {0};
 
 volatile static unsigned char buf [SIZE_BUF];
 
@@ -38,7 +42,7 @@ void myTask_Philos_3(void* pvParameters);
 void myTask_Philos_4(void* pvParameters);
 void myTask_Philos_5(void* pvParameters);
 void takeFork (uint8_t);
-
+/* ---------------------------------------------------------------------------*/
 int main(void)
 {
   HAL_Init();
@@ -129,6 +133,8 @@ void takeFork (uint8_t philosopher)
   {
     if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
     {
+			
+			osSemaphoreRelease(xSemaphoreTakingFork);
 		}
 	}
 	
