@@ -153,6 +153,11 @@ void takeFork (uint8_t philosopher)
 		}
 	}
 }
+/**
+  * @brief  This function is executed when one of the philosophers test forks.
+  * @param  philosopher: Number of philosopher who want release the forks.
+  * @retval None
+  */
 void tryToEat(uint8_t philosopher)
 {
 		if (philosopherStatus[philosopher] == Phiholofer_WAITING 
@@ -174,6 +179,8 @@ void putFork (uint8_t philosopher)
 	if(osSemaphoreWait(xSemaphoreTakingFork , 100) == osOK)
 	{
 		philosopherStatus[philosopher] = Phiholofer_THINKING;
+		tryToEat(LEFT_Fork_NUMBER(philosopher));
+		tryToEat(RIGHT_Fork_NUMBER(philosopher));
 		osSemaphoreRelease(xSemaphoreTakingFork);
 	}
 }
