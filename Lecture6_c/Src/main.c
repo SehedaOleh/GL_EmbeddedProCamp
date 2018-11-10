@@ -46,11 +46,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
-DMA_HandleTypeDef hdma_spi1_tx;
-DMA_HandleTypeDef hdma_spi1_rx;
 
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
@@ -68,6 +67,7 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 uint8_t dataRx[str_length] = {0};
+volatile uint32_t adc_data[1] = {0};
 volatile float adc_value = 0;
 /* USER CODE END PV */
 
@@ -134,18 +134,22 @@ int main(void)
 
 	while (1)
   {
-		HAL_ADC_Start(&hadc1);		// start of analog-digital-conversion
-		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
-		adc_value = (float)(HAL_ADC_GetValue(&hadc1)) * 3 / 4096; // take value from ADC and calculate 3V / 4096 => 3V/ 2^12
-		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
-	
+		HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data,1);  // Start and take value from ADC using DMA
+//		HAL_ADC_Start(&hadc1);		// start of analog-digital-conversion
+//		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
+//		adc_value = (float)(HAL_ADC_GetValue(&hadc1)) * 3 / 4096; // take value from ADC and calculate 3V / 4096 => 3V/ 2^12
+//		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
+		
+		adc_value = adc_data[0] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
+		HAL_ADC_Stop_DMA(&hadc1);	// stop ADC 
 		HAL_Delay(100);
-		sprintf(str,"%2.4f",adc_value); 
+		
+		sprintf(str,"%2.6f\r",adc_value); 
 		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
 		HAL_Delay(100);
 		
 //		set_SS_SPI3();
-//		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
+//		HAL_SPI_Transmit_IT (&hspi1, (uint8_t *)dataTx, str_length);
 //		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
 //		
 //		if (dataRx[0] != 0)
@@ -377,12 +381,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* DMA1_Channel2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
-  /* DMA1_Channel3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
   /* DMA1_Channel4_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
