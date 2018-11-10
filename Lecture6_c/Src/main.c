@@ -68,6 +68,7 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 uint8_t dataRx[str_length] = {0};
+volatile uint16_t adc_value = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -133,6 +134,10 @@ int main(void)
 
 	while (1)
   {
+		HAL_ADC_Start(&hadc1);		// start of analog-digital-conversion
+		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
+		adc_value = HAL_ADC_GetValue(&hadc1); // take value from ADC
+		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
 //		set_SS_SPI3();
 //		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
 //		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
@@ -148,7 +153,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-//		HAL_Delay(1000);
+		HAL_Delay(1000);
 //		dataRx[0] = 0;
   }
   /* USER CODE END 3 */
