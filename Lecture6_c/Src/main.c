@@ -45,10 +45,7 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-#define str_length 			10
-
-#define set_SS_SPI3() 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET)
-#define reset_SS_SPI3() 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET)
+ADC_HandleTypeDef hadc1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
@@ -61,12 +58,16 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 PCD_HandleTypeDef hpcd_USB_FS;
 
-uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
-uint8_t dataRx[str_length] = {0};
 /* USER CODE BEGIN PV */
 
 /* Private variables ---------------------------------------------------------*/
+#define str_length 			10
 
+#define set_SS_SPI3() 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET)
+#define reset_SS_SPI3() 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET)
+
+uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+uint8_t dataRx[str_length] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,6 +78,7 @@ static void MX_SPI1_Init(void);
 static void MX_USB_PCD_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -121,34 +123,33 @@ int main(void)
   MX_USB_PCD_Init();
   MX_USART1_UART_Init();
   MX_SPI3_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	//HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-	//HAL_UART_Receive_IT(&huart1, str, sizeof(str));
 
 	while (1)
   {
 //		set_SS_SPI3();
-		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
-		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-		
-		if (dataRx[0] != 0)
-		{
-			LED01ON();
-			HAL_Delay(100);
-			LED01OFF();
-		}
-			HAL_Delay(100);
+//		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
+//		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
+//		
+//		if (dataRx[0] != 0)
+//		{
+//			LED01ON();
+//			HAL_Delay(100);
+//			LED01OFF();
+//		}
+//			HAL_Delay(100);
 //		reset_SS_SPI3();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
 //		HAL_Delay(1000);
-		dataRx[0] = 0;
+//		dataRx[0] = 0;
   }
   /* USER CODE END 3 */
 
@@ -193,8 +194,10 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_USART1;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_USART1
+                              |RCC_PERIPHCLK_ADC12;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
   PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -211,6 +214,57 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+
+/* ADC1 init function */
+static void MX_ADC1_Init(void)
+{
+
+  ADC_MultiModeTypeDef multimode;
+  ADC_ChannelConfTypeDef sConfig;
+
+    /**Common config 
+    */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.LowPowerAutoWait = DISABLE;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure the ADC multi-mode 
+    */
+  multimode.Mode = ADC_MODE_INDEPENDENT;
+  if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* SPI1 init function */
