@@ -68,7 +68,7 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 uint8_t dataRx[str_length] = {0};
-volatile uint16_t adc_value = 0;
+volatile float adc_value = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +98,7 @@ static void MX_ADC1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	//uint8_t  str[str_length] = {0};
+	char  str[str_length] = {0};
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -136,8 +136,14 @@ int main(void)
   {
 		HAL_ADC_Start(&hadc1);		// start of analog-digital-conversion
 		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
-		adc_value = HAL_ADC_GetValue(&hadc1); // take value from ADC
+		adc_value = (float)(HAL_ADC_GetValue(&hadc1)) * 3 / 4096; // take value from ADC and calculate 3V / 4096 => 3V/ 2^12
 		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
+	
+		HAL_Delay(100);
+		sprintf(str,"%2.4f",adc_value); 
+		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
+		HAL_Delay(100);
+		
 //		set_SS_SPI3();
 //		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
 //		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
@@ -153,7 +159,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-		HAL_Delay(1000);
+		
 //		dataRx[0] = 0;
   }
   /* USER CODE END 3 */
