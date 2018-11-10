@@ -43,14 +43,17 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+
+/* Private variables ---------------------------------------------------------*/
 #define str_length 			10
 
 #define set_SS_SPI3() 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET)
 #define reset_SS_SPI3() 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET)
 
-/* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
+DMA_HandleTypeDef hdma_spi1_tx;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
@@ -76,7 +79,19 @@ static void MX_USART1_UART_Init(void);
 static void MX_SPI3_Init(void);
 
 /* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
 
+/* USER CODE END PFP */
+
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  *
+  * @retval None
+  */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -88,8 +103,16 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -98,38 +121,34 @@ int main(void)
   MX_USB_PCD_Init();
   MX_USART1_UART_Init();
   MX_SPI3_Init();
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	//HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-	reset_SS_SPI3();
-	HAL_Delay(10);
-	HAL_SPI_Transmit (&hspi1, &dataTx[0], 1, 10);
-	HAL_SPI_Receive (&hspi1, &dataRx[0], 1, 10);
-	
-	if (dataRx[0] != 0)
+	//HAL_UART_Receive_IT(&huart1, str, sizeof(str));
+
+	while (1)
+  {
+//		set_SS_SPI3();
+		HAL_SPI_Transmit_DMA (&hspi1, (uint8_t *)dataTx, str_length);
+		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
+		
+		if (dataRx[0] != 0)
 		{
 			LED01ON();
 			HAL_Delay(100);
 			LED01OFF();
 		}
-	//HAL_UART_Receive_IT(&huart1, str, sizeof(str));
-
-	while (1)
-  {
+			HAL_Delay(100);
+//		reset_SS_SPI3();
   /* USER CODE END WHILE */
-		set_SS_SPI3();
-		HAL_SPI_Transmit (&hspi1, (uint8_t *)dataTx, str_length, 0xFFFF);
-		
-		
-//		while (HAL_SPI_GetState (&hspi1) != HAL_SPI_STATE_READY)
-//		{
-//		}
-		HAL_SPI_Receive_IT(&hspi3,(uint8_t *)dataRx, str_length);
-		reset_SS_SPI3();
-		
+
   /* USER CODE BEGIN 3 */
-		HAL_Delay(1000);
+//		HAL_Delay(1000);
+		dataRx[0] = 0;
   }
   /* USER CODE END 3 */
 
@@ -205,7 +224,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -293,6 +312,12 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Channel2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+  /* DMA1_Channel3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
   /* DMA1_Channel4_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);

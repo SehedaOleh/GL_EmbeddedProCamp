@@ -580,11 +580,6 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
         hspi->Instance->DR = *((uint16_t *)pData);
         pData += sizeof(uint16_t);
         hspi->TxXferCount--;
-				//*********************************//
-				LED01ON();
-				HAL_Delay(100);
-				LED01OFF();
-				//*********************************//
       }
       else
       {
@@ -642,11 +637,6 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
           goto error;
         }
       }
-//			//*********************************//
-//			LED02ON();
-//			HAL_Delay(100);
-//			LED02OFF();
-//			//*********************************//
     }
   }
 #if (USE_SPI_CRC != 0U)
