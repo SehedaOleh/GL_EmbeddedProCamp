@@ -145,7 +145,7 @@ int main(void)
 		for (int i = 0; i < number_of_ADC_channels; i++)
 		{
 			adc_value[i] = adc_data[i] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
-			sprintf(str,"%2.6f\r",adc_value[i]); 
+			sprintf(str,"%1.6f\r",adc_value[i]); 
 			HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
 			HAL_Delay(500);
 		}
