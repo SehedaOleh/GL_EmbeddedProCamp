@@ -131,7 +131,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data,1);  // Start and take value from ADC using DMA
+	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data,3);  // Start and take value from ADC using DMA
 	while (1)
   {
 		
