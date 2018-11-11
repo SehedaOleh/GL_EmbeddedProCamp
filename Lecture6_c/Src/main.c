@@ -142,11 +142,13 @@ int main(void)
 		HAL_ADC_Stop_DMA(&hadc1);	// stop ADC 
 	
 		HAL_Delay(100);
-		
-		adc_value[0] = adc_data[0] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
-		sprintf(str,"%2.6f\r",adc_value[0]); 
-		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
-		HAL_Delay(500);
+		for (int i = 0; i < number_of_ADC_channels; i++)
+		{
+			adc_value[i] = adc_data[i] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
+			sprintf(str,"%2.6f\r",adc_value[i]); 
+			HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
+			HAL_Delay(500);
+		}
 		
 //		set_SS_SPI3();
 //		HAL_SPI_Transmit_IT (&hspi1, (uint8_t *)dataTx, str_length);
@@ -243,13 +245,13 @@ static void MX_ADC1_Init(void)
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 3;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
@@ -275,6 +277,24 @@ static void MX_ADC1_Init(void)
   sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
