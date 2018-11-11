@@ -131,15 +131,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data,1);  // Start and take value from ADC using DMA
 	while (1)
   {
-		HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data,1);  // Start and take value from ADC using DMA
+		
 //		HAL_ADC_Start(&hadc1);		// start of analog-digital-conversion
 //		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
 //		adc_value = (float)(HAL_ADC_GetValue(&hadc1)) * 3 / 4096; // take value from ADC and calculate 3V / 4096 => 3V/ 2^12
 //		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
-		HAL_ADC_Stop_DMA(&hadc1);	// stop ADC 
+//		HAL_ADC_Stop_DMA(&hadc1);	// stop ADC 
 	
 		HAL_Delay(100);
 		for (int i = 0; i < number_of_ADC_channels; i++)
