@@ -61,14 +61,14 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 /* Private variables ---------------------------------------------------------*/
 #define str_length 			10
-
+#define number_of_ADC_channels 3
 #define set_SS_SPI3() 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET)
 #define reset_SS_SPI3() 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET)
 
 uint8_t dataTx[str_length] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 uint8_t dataRx[str_length] = {0};
-volatile uint32_t adc_data[1] = {0};
-volatile float adc_value = 0;
+volatile uint32_t adc_data[number_of_ADC_channels] = {0};
+volatile float adc_value[number_of_ADC_channels] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -139,14 +139,14 @@ int main(void)
 //		HAL_ADC_PollForConversion(&hadc1, 100); // waiting for the ADC to complete
 //		adc_value = (float)(HAL_ADC_GetValue(&hadc1)) * 3 / 4096; // take value from ADC and calculate 3V / 4096 => 3V/ 2^12
 //		HAL_ADC_Stop (&hadc1);   // stop of analog-digital-conversion
-		
-		adc_value = adc_data[0] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
 		HAL_ADC_Stop_DMA(&hadc1);	// stop ADC 
+	
 		HAL_Delay(100);
 		
-		sprintf(str,"%2.6f\r",adc_value); 
+		adc_value[0] = adc_data[0] * 3.0 /4096;	// calculate 3V / 4096 => 3V/ 2^12
+		sprintf(str,"%2.6f\r",adc_value[0]); 
 		HAL_UART_Transmit_DMA(&huart1, (uint8_t*)str, sizeof(str)-1);
-		HAL_Delay(100);
+		HAL_Delay(500);
 		
 //		set_SS_SPI3();
 //		HAL_SPI_Transmit_IT (&hspi1, (uint8_t *)dataTx, str_length);
